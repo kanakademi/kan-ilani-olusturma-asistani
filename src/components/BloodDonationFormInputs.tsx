@@ -269,18 +269,23 @@ export default function BloodDonationFormInputs(props: InputProps) {
         <div style={{ fontSize: "1rem", fontWeight: "400", color: theme.palette.mode === "dark" ? "#ffffffb3" : "#555" }}>
           {t("templateSelection")}
         </div>
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1, }}>
+        <Box role="group" aria-label={t("templateSelection")} sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1, }}>
           {getTemplateList().map((template, index) => {
             const isSelected = props.selectedTemplate === index;
             const isDark = theme.palette.mode === "dark";
             const borderColor = isSelected ? (isDark ? "#fff" : "#222") : (isDark ? "#444" : "#ccc");
             return (
               <Box
+                component="button"
+                type="button"
                 key={template.id}
                 title={template.name}
-                aria-label={template.name}
+                aria-label={`${template.name} şablonu`}
+                aria-pressed={isSelected}
                 onClick={() => props.handleTemplateChange(index)}
                 sx={{
+                  padding: 0,
+                  font: "inherit",
                   width: 46,
                   height: 46,
                   borderRadius: "50%",

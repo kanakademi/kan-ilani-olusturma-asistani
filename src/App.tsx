@@ -20,10 +20,8 @@ function App() {
   );
   const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    const userLanguage = navigator.language;
-    i18n.changeLanguage(userLanguage.split("-")[0]);
-  }, [i18n]);
+  // Dil varsayılan olarak Türkçe (i18n.ts: lng "tr"); İngilizce isteyen üstteki EN düğmesini kullanır.
+  // Önceden tarayıcı diline göre İngilizce açılıyordu; ilanlar Türkiye'de paylaşılıyor.
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
