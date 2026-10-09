@@ -18,13 +18,16 @@ import {
 } from "@mui/material";
 import { Info } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import type { DonationInfo } from "../entities/DonationInfo";
+import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
+
+const BLOOD_GROUPS = ["A RH (+)", "A RH (-)", "B RH (+)", "B RH (-)", "AB RH (+)", "AB RH (-)", "0 RH (+)", "0 RH (-)"];
 import { getTemplateList } from "../templates";
 
 interface InputProps {
   donationInfo: DonationInfo;
   selectedTemplate: number;
   handleDonationInfoChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent | SelectChangeEvent<string[]>) => void;
+  handleBloodGroupChange: (e: SelectChangeEvent<string[]>) => void;
   handleDonationInfoPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDonationInfoDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   downloadImageAndUpdateCounter: () => void;
@@ -36,6 +39,10 @@ export default function BloodDonationFormInputs(props: InputProps) {
   const { t } = useTranslation();
   const [showErrors, setShowErrors] = useState(false);
 
+  const selectedBloodGroups = props.donationInfo.bloodGroup;
+  const hasRegardless = selectedBloodGroups.includes(REGARDLESS_BLOOD_GROUP);
+  // sınıra ulaşınca seçili olanlar tıklanabilir kalır ki biri bırakılıp başkası seçilebilsin
+  const limitReached = selectedBloodGroups.length >= MAX_BLOOD_GROUP_SELECTION;
   const selectedBloodTypes = Array.isArray(props.donationInfo.bloodType) ? props.donationInfo.bloodType : props.donationInfo.bloodType ? [props.donationInfo.bloodType] : [];
 
   const isEmpty = (val: any) => {
@@ -109,23 +116,24 @@ export default function BloodDonationFormInputs(props: InputProps) {
       >
         <InputLabel id="blood-group-label">{t("bloodGroup")}</InputLabel>
         <Select
+          multiple
           labelId="blood-group-label"
           name="bloodGroup"
           label={t("bloodGroup")}
           aria-label={t("bloodGroup")}
-          value={props.donationInfo.bloodGroup}
-          onChange={props.handleDonationInfoChange}
+          value={selectedBloodGroups}
+          onChange={props.handleBloodGroupChange}
+          renderValue={(selected) => selected.map((g) => (g === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : g)).join(", ")}
         >
-          <MenuItem value="A RH (+)">A RH (+)</MenuItem>
-          <MenuItem value="A RH (-)">A RH (-)</MenuItem>
-          <MenuItem value="B RH (+)">B RH (+)</MenuItem>
-          <MenuItem value="B RH (-)">B RH (-)</MenuItem>
-          <MenuItem value="AB RH (+)">AB RH (+)</MenuItem>
-          <MenuItem value="AB RH (-)">AB RH (-)</MenuItem>
-          <MenuItem value="0 RH (+)">0 RH (+)</MenuItem>
-          <MenuItem value="0 RH (-)">0 RH (-)</MenuItem>
-          <MenuItem value="Kan Grubu Fark Etmeksizin">
-            {t("regardlessOfBloodType")}
+          {BLOOD_GROUPS.map((group) => (
+            <MenuItem key={group} value={group} disabled={hasRegardless || (limitReached && !selectedBloodGroups.includes(group))}>
+              <Checkbox checked={selectedBloodGroups.includes(group)} />
+              <ListItemText primary={group} />
+            </MenuItem>
+          ))}
+          <MenuItem value={REGARDLESS_BLOOD_GROUP}>
+            <Checkbox checked={hasRegardless} />
+            <ListItemText primary={t("regardlessOfBloodType")} />
           </MenuItem>
         </Select>
         {bloodGroupError && <FormHelperText>{t("requiredText")}</FormHelperText>}
@@ -189,8 +197,9 @@ export default function BloodDonationFormInputs(props: InputProps) {
         helperText={phoneError ? t("requiredText") : ""}
       />
 
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Box sx={{ flex: 1 }}>
+      {/* dar telefonda "Düzenli İhtiyaç" ve bilgi düğmesi tarihin altına iner; yoksa sayfa yana taşıyordu */}
+      <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}>
+        <Box sx={{ flex: "1 1 170px" }}>
           <LabeledTextField
             type="date"
             name="date"
@@ -268,13 +277,16 @@ export default function BloodDonationFormInputs(props: InputProps) {
             return (
               <Box
                 key={template.id}
-                title={`Template ${index + 1}`}
+                title={template.name}
+                aria-label={template.name}
                 onClick={() => props.handleTemplateChange(index)}
                 sx={{
                   width: 46,
                   height: 46,
                   borderRadius: "50%",
                   background: template.selectorColor,
+                  color: template.selectorInk,
+                  fontWeight: 700,
                   border: `3px solid ${borderColor}`,
                   //boxShadow: isSelected ? `0 0 8px ${boxShadowColor}` : `0 0 4px ${boxShadowColor}`,
                   cursor: "pointer",

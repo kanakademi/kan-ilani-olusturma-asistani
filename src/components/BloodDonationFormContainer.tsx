@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 import { useTranslation } from "react-i18next";
 import "./BloodDonationFormContainer.css";
 import { formatDateToTurkish, formatPhoneNumber, hashData } from "../utils/formUtils";
-import { type DonationInfo, initialDonationInfo } from "../entities/DonationInfo";
+import { type DonationInfo, initialDonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
 import { type SelectChangeEvent } from "@mui/material";
 import BloodDonationFormInputs from "./BloodDonationFormInputs";
 import { getTemplateByIndex } from "../templates";
@@ -26,6 +26,14 @@ export default function BloodDonationFormContainer() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleBloodGroupChange = (e: SelectChangeEvent<string[]>) => {
+    const selected = e.target.value as string[];
+    // "Fark etmeksizin" diğer gruplarla birlikte seçilemez
+    const value = selected.includes(REGARDLESS_BLOOD_GROUP) ? [REGARDLESS_BLOOD_GROUP] : selected;
+    if (value.length > MAX_BLOOD_GROUP_SELECTION) return; // menüde zaten kapalı; klavye vb. için koruma
+    setDonationInfo((prev) => ({ ...prev, bloodGroup: value }));
   };
 
   const handleDonationInfoPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,8 +138,7 @@ export default function BloodDonationFormContainer() {
 
     try {
       const canvas = await html2canvas(imageRef.current, {
-        //backgroundColor: "#ffffff",
-        //scale: 2,
+        scale: 3, // 360×640 → Instagram hikâyesi 1080×1920
         useCORS: true,
       });
 
@@ -205,6 +212,7 @@ export default function BloodDonationFormContainer() {
         donationInfo={donationInfo}
         selectedTemplate={selectedTemplateIndex}
         handleDonationInfoChange={handleDonationInfoChange}
+        handleBloodGroupChange={handleBloodGroupChange}
         handleDonationInfoPhoneChange={handleDonationInfoPhoneChange}
         handleDonationInfoDateChange={handleDonationInfoDateChange}
         downloadImageAndUpdateCounter={downloadImage}
