@@ -2,9 +2,15 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --color-bg: #242424;
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-muted: #888;
+  /* kanakademi.com.tr renkleri */
+  --kan: #e3262f;
+  --mavi: #1ba6df;
+  --gece: #0e0a2e;
+  --gradyan: linear-gradient(135deg, #e3262f 0%, #9b3bb5 50%, #1ba6df 100%);
+  --color-bg: #0e0a2e;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-muted: #b9b5d6;
+  font-family: "Plus Jakarta Sans Variable", system-ui, sans-serif;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,20 +19,50 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #fafafa;
-  --color-text: #222;
-  --color-muted: #888;
+  --color-bg: #f6f5fb;
+  --color-text: #1a1730;
+  --color-muted: #5e5a73;
 }
 
 [data-theme="dark"] {
   color-scheme: light dark;
-  --color-bg: #242424;
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-muted: #888;
+  --color-bg: #0e0a2e;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-muted: #b9b5d6;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background 0.2s, color 0.2s;
+}
+
+body {
+  margin: 0;
+  padding: 0 16px 32px;
+}
+/* başlık: sitedeki gibi gradyanlı vurgu */
+h2 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--gradyan);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.site-baglanti {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+.site-baglanti:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+h2 + p {
+  max-width: 640px;
+  margin: 0 auto 24px;
+  color: var(--color-muted);
 }

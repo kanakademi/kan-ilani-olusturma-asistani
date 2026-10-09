@@ -45,8 +45,8 @@ function App() {
             <meta charset="UTF-8">
             <style>                
                 .logo { width: 80px; margin-bottom: 20px; }
-                .containerr { background-color: #eeebe3; text-align: center; }
-                .main-title { font-size: 2.5em; font-weight: bold; margin: 10px 0; }
+                .containerr { text-align: center; }
+                .main-title { font-size: 2.5em; font-weight: 800; margin: 10px 0; color: #e3262f; }
             </style>
         </head>
         <body>
@@ -61,7 +61,8 @@ function App() {
       `,
       showConfirmButton: true,
       confirmButtonText: t("close"),
-      background: "#eeebe3",
+      background: "#ffffff",
+      confirmButtonColor: "#e3262f",
     });
   };
 
@@ -83,13 +84,21 @@ function App() {
     setIsPlaying(true);
   };
 
+  // kanakademi.com.tr ile aynı renkler ve yazı tipi
   const muiTheme = createTheme(
     {
       palette: {
         mode: theme,
+        primary: { main: "#e3262f", dark: "#b3121c", contrastText: "#fff" },
+        secondary: { main: "#1ba6df" },
+        ...(theme === "dark"
+          ? { background: { default: "#0e0a2e", paper: "#1b1546" } }
+          : { background: { default: "#f6f5fb", paper: "#ffffff" } }),
       },
+      shape: { borderRadius: 12 },
       typography: {
-        fontFamily: "Roboto, sans-serif",
+        fontFamily: '"Plus Jakarta Sans Variable", system-ui, sans-serif',
+        button: { textTransform: "none", fontWeight: 700 },
       },
     },
     trTR

@@ -1,5 +1,8 @@
 * {
   box-sizing: border-box;
+}
+.image-wrapper,
+.image-wrapper * {
   font-family: "Roboto", sans-serif;
 }
 
@@ -82,5 +85,22 @@ textarea {
   max-width: 360px;
   width: 100%;
   cursor: pointer;
-  border-radius: 50px;
+  border: 0;
+  border-radius: 999px;
+  padding: 1rem 1.5rem;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--gradyan);
+  box-shadow: 0 8px 24px rgb(227 38 47 / 30%);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.download-image-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgb(227 38 47 / 40%);
+}
+.download-image-button:focus-visible {
+  outline: 3px solid var(--mavi);
+  outline-offset: 3px;
 }

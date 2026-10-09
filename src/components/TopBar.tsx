@@ -60,6 +60,10 @@ export default function TopBar(props: TopBarProps) {
           </Button>
         </ButtonGroup>
 
+        <a className="site-baglanti" href="https://kanakademi.com.tr/">
+          ← kanakademi.com.tr
+        </a>
+
         <ButtonGroup
           size="small"
           color="inherit"

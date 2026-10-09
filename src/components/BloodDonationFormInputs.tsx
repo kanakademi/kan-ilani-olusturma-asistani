@@ -33,7 +33,7 @@ interface InputProps {
 
 export default function BloodDonationFormInputs(props: InputProps) {
   const theme = useTheme();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [showErrors, setShowErrors] = useState(false);
 
   const selectedBloodTypes = Array.isArray(props.donationInfo.bloodType) ? props.donationInfo.bloodType : props.donationInfo.bloodType ? [props.donationInfo.bloodType] : [];
@@ -293,17 +293,10 @@ export default function BloodDonationFormInputs(props: InputProps) {
 
       <Box sx={{ mb: 2 }} />
 
-      {/* İNDİRME BUTONU */}
-      <img
-        src={
-          i18n.language === "tr"
-            ? "./assets/images/download-button-tr.jpg"
-            : "./assets/images/download-button-en.jpg"
-        }
-        alt={t("downloadButtonAlt")}
-        className="download-image-button"
-        onClick={handleDownloadClick}
-      />
+      {/* İNDİRME BUTONU — eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
+      <button type="button" className="download-image-button" onClick={handleDownloadClick}>
+        {t("downloadButtonAlt")}
+      </button>
     </form>
   );
 }
