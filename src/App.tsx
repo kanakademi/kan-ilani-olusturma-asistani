@@ -15,9 +15,18 @@ function App() {
   const { t, i18n } = useTranslation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const [theme, setTheme] = useState<"light" | "dark">(
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-  );
+  // tema kanakademi.com.tr ile ortak: aynı alan adında "kk-tema" anahtarı (koyu/acik); yoksa sistem tercihi
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    let kayitli: string | null = null;
+    try {
+      kayitli = localStorage.getItem("kk-tema");
+    } catch {
+      /* gizli sekme vb. */
+    }
+    if (kayitli === "koyu") return "dark";
+    if (kayitli === "acik") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Dil varsayılan olarak Türkçe (i18n.ts: lng "tr"); İngilizce isteyen üstteki EN düğmesini kullanır.
@@ -28,7 +37,13 @@ function App() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    try {
+      localStorage.setItem("kk-tema", next === "dark" ? "koyu" : "acik");
+    } catch {
+      /* gizli sekme vb. */
+    }
   };
 
   const handleInfoClick = async () => {
