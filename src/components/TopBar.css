@@ -1,0 +1,93 @@
+/* body'nin 16px yan boşluğunu taşıp çizgi ekran boyunca uzansın */
+.ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  margin: 0 -16px 32px;
+  padding: 0 max(16px, calc((100% - 1040px) / 2));
+  border-bottom: 2px solid;
+  border-image: var(--gradyan) 1;
+}
+
+.ust__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ust__logo img {
+  height: 36px;
+  width: auto;
+}
+/* dar telefonda yalnız logo; araçlara yer kalsın */
+@media (max-width: 419px) {
+  .ust__logo span {
+    display: none;
+  }
+}
+
+.ust__araclar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ust__dil {
+  display: flex;
+  padding: 3px;
+  margin-right: 4px;
+  border: 1px solid var(--cizgi);
+  border-radius: 999px;
+}
+.ust__dil button {
+  min-width: 36px;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ust__dil button[aria-pressed="true"] {
+  background: var(--kan);
+  color: #fff;
+}
+
+.ust__ikon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ust__ikon:hover,
+.ust__dil button:hover:not([aria-pressed="true"]) {
+  background: var(--yuzey);
+}
+.ust__ikon[aria-pressed="true"] {
+  color: var(--kan);
+}
+
+.ust__logo:focus-visible,
+.ust__dil button:focus-visible,
+.ust__ikon:focus-visible {
+  outline: 3px solid var(--mavi);
+  outline-offset: 2px;
+}

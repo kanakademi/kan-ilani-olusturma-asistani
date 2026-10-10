@@ -1,7 +1,6 @@
-import { Button, ButtonGroup } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Info } from "@mui/icons-material";
-import Logo from "./Logo";
+import { DarkModeOutlined, InfoOutlined, LightModeOutlined, PauseRounded, VolumeUpOutlined } from "@mui/icons-material";
+import "./TopBar.css";
 
 interface TopBarProps {
   theme: "light" | "dark";
@@ -12,74 +11,49 @@ interface TopBarProps {
   handleSpeakClick: () => void;
 }
 
+// kanakademi.com.tr başlığıyla aynı düzen: solda logo, sağda araçlar
 export default function TopBar(props: TopBarProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language.startsWith("en") ? "en" : "tr";
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <ButtonGroup
-          size="small"
-          color="inherit"
-          variant="text"
-          aria-label={t("topBarLeftButtonGroup")}
-        >
-          <Button
-            title={t("topBarTrButton")}
-            aria-label={t("topBarTrButton")}
-            onClick={() => props.changeLanguage("tr")}
-          >
-            TR
-          </Button>
-          <Button
-            title={t("topBarEnButton")}
-            aria-label={t("topBarEnButton")}
-            onClick={() => props.changeLanguage("en")}
-          >
-            EN
-          </Button>
-          <Button
-            title={t("topBarThemeButton")}
-            aria-label={t("topBarThemeButton")}
-            onClick={() => props.toggleTheme()}
-          >
-            {props.theme === "light" ? "🌙" : "☀️"}
-          </Button>
-          <Button
-            title={t("topBarSoundButton")}
-            aria-label={t("topBarSoundButton")}
-            onClick={() => props.handleSpeakClick()}
-          >
-            {props.isPlaying ? "⏸️" : "🔊"}
-          </Button>
-        </ButtonGroup>
+    <header className="ust">
+      <a className="ust__logo" href="https://kanakademi.com.tr/" aria-label="Kan Akademi anasayfa">
+        <img src="./assets/images/kan-akademi-logo.png" alt="" width="26" height="40" />
+        <span>Kan Akademi</span>
+      </a>
 
-        <a className="site-baglanti" href="https://kanakademi.com.tr/">
-          ← kanakademi.com.tr
-        </a>
-
-        <ButtonGroup
-          size="small"
-          color="inherit"
-          variant="text"
-          aria-label={t("topBarRightButtonGroup")}
+      <div className="ust__araclar">
+        <div className="ust__dil" role="group" aria-label={t("topBarLeftButtonGroup")}>
+          {(["tr", "en"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={lang === l}
+              aria-label={t(l === "tr" ? "topBarTrButton" : "topBarEnButton")}
+              onClick={() => props.changeLanguage(l)}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <button type="button" className="ust__ikon" title={t("topBarThemeButton")} aria-label={t("topBarThemeButton")} onClick={props.toggleTheme}>
+          {props.theme === "light" ? <DarkModeOutlined fontSize="small" /> : <LightModeOutlined fontSize="small" />}
+        </button>
+        <button
+          type="button"
+          className="ust__ikon"
+          title={t("topBarSoundButton")}
+          aria-label={t("topBarSoundButton")}
+          aria-pressed={props.isPlaying}
+          onClick={props.handleSpeakClick}
         >
-          <Button
-            title={t("topBarInfoButton")}
-            aria-label={t("topBarInfoButton")}
-            onClick={props.handleInfoClick}
-          >
-            <Info />
-          </Button>
-        </ButtonGroup>
+          {props.isPlaying ? <PauseRounded fontSize="small" /> : <VolumeUpOutlined fontSize="small" />}
+        </button>
+        <button type="button" className="ust__ikon" title={t("topBarInfoButton")} aria-label={t("topBarInfoButton")} onClick={props.handleInfoClick}>
+          <InfoOutlined fontSize="small" />
+        </button>
       </div>
-      <Logo />
-    </>
+    </header>
   );
 }

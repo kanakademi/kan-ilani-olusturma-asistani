@@ -2,26 +2,198 @@
   box-sizing: border-box;
 }
 
+/* telefonda form → önizleme → indir; geniş ekranda form solda, önizleme sağda sabit */
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* yoksa sütun içeriğe göre genişleyip dar telefonda taşar */
+  justify-items: center;
+  gap: 8px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+@media (min-width: 880px) {
+  .container {
+    grid-template-columns: minmax(0, 480px) 360px;
+    justify-content: center;
+    align-items: start;
+    column-gap: 64px;
+  }
+  .onizleme {
+    position: sticky;
+    top: 16px;
+  }
 }
 
 .form {
-  margin-bottom: 20px;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* bölümler: kutu yerine numara + marka gradyanlı çizgi */
+.bolum {
+  min-width: 0;
+  margin: 0 0 28px;
+  padding: 0;
+  border: 0;
+}
+.bolum__baslik {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 0 0 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-bottom: 2px solid;
+  border-image: var(--gradyan) 1;
+}
+.bolum__no {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--gradyan);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.secim-baslik {
+  margin: 4px 0 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.secim {
+  display: grid;
+  gap: 8px;
+}
+.secim--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.secim--sar {
+  display: flex;
+  flex-wrap: wrap;
+}
+.secim__dugme {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid var(--cizgi);
+  border-radius: 10px;
+  background: var(--yuzey);
+  color: inherit;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.secim--4 .secim__dugme {
+  padding: 0 4px;
+}
+.secim__dugme--genis {
+  grid-column: 1 / -1;
+}
+.secim__dugme:hover:not(:disabled) {
+  border-color: var(--kan);
+}
+.secim__dugme[aria-pressed="true"] {
+  background: var(--kan);
+  border-color: var(--kan);
+  color: #fff;
+}
+.secim__dugme:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.secim-not {
+  margin: 6px 0 14px;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.secim-not--hata {
+  color: var(--hata);
+}
+
+.tarih-satiri {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 12px;
+}
+.tarih-satiri__tarih {
+  flex: 1 1 170px;
+}
+.tarih-satiri__duzenli {
+  display: flex;
+  align-items: center;
+}
+
+.sablonlar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.sablon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.sablon__renk {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--cizgi);
+  border-radius: 10px;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+.sablon[aria-pressed="true"] {
+  color: var(--color-text);
+}
+.sablon[aria-pressed="true"] .sablon__renk {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--kan);
+}
+
+.secim__dugme:focus-visible,
+.sablon:focus-visible {
+  outline: 3px solid var(--mavi);
+  outline-offset: 3px;
+}
+
+.onizleme {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
   max-width: 360px;
 }
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  margin-bottom: 10px;
+.onizleme__baslik {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-muted);
 }
+.onizleme__alan {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 25%);
+}
+.onizleme__olcek {
+  width: 360px;
+  transform-origin: top left;
+}
+
 .download-image-button {
   max-width: 360px;
   width: 100%;

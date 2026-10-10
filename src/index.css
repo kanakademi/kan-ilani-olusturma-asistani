@@ -10,6 +10,9 @@
   --color-bg: #0e0a2e;
   --color-text: rgba(255, 255, 255, 0.9);
   --color-muted: #b9b5d6;
+  --cizgi: #3a3470;
+  --yuzey: #1b1546;
+  --hata: #ff6b6b;
   font-family: "Plus Jakarta Sans Variable", system-ui, sans-serif;
 
   font-synthesis: none;
@@ -22,6 +25,9 @@
   --color-bg: #f6f5fb;
   --color-text: #1a1730;
   --color-muted: #5e5a73;
+  --cizgi: #d9d6e6;
+  --yuzey: #ffffff;
+  --hata: #c62828;
 }
 
 [data-theme="dark"] {
@@ -29,6 +35,9 @@
   --color-bg: #0e0a2e;
   --color-text: rgba(255, 255, 255, 0.9);
   --color-muted: #b9b5d6;
+  --cizgi: #3a3470;
+  --yuzey: #1b1546;
+  --hata: #ff6b6b;
 }
 
 body {
@@ -49,17 +58,6 @@ h2 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-.site-baglanti {
-  color: inherit;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-.site-baglanti:hover {
-  opacity: 1;
-  text-decoration: underline;
 }
 h2 + p {
   max-width: 640px;
