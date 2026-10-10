@@ -17,9 +17,10 @@ function App() {
 
   // tema kanakademi.com.tr ile ortak: aynı alan adında "kk-tema" anahtarı (koyu/acik); yoksa sistem tercihi
   const [theme, setTheme] = useState<"light" | "dark">(() => {
-    let kayitli: string | null = null;
+    // önce .kanakademi.com.tr çerezi (site, Kanhoot ve asistan ortak), sonra eski localStorage kaydı
+    let kayitli: string | null = document.cookie.match(/(?:^|; )kk-tema=(koyu|acik)/)?.[1] ?? null;
     try {
-      kayitli = localStorage.getItem("kk-tema");
+      kayitli ??= localStorage.getItem("kk-tema");
     } catch {
       /* gizli sekme vb. */
     }
@@ -39,11 +40,14 @@ function App() {
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
+    const deger = next === "dark" ? "koyu" : "acik";
     try {
-      localStorage.setItem("kk-tema", next === "dark" ? "koyu" : "acik");
+      localStorage.setItem("kk-tema", deger);
     } catch {
       /* gizli sekme vb. */
     }
+    const alan = location.hostname.endsWith("kanakademi.com.tr") ? "; domain=.kanakademi.com.tr" : "";
+    document.cookie = `kk-tema=${deger}; path=/; max-age=31536000; SameSite=Lax${alan}`;
   };
 
   const handleInfoClick = async () => {
