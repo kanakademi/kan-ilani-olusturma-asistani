@@ -15,22 +15,39 @@ function App() {
   const { t, i18n } = useTranslation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const [theme, setTheme] = useState<"light" | "dark">(
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-  );
+  // tema kanakademi.com.tr ile ortak: aynı alan adında "kk-tema" anahtarı (koyu/acik); yoksa sistem tercihi
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    // önce .kanakademi.com.tr çerezi (site, Kanhoot ve asistan ortak), sonra eski localStorage kaydı
+    let kayitli: string | null = document.cookie.match(/(?:^|; )kk-tema=(koyu|acik)/)?.[1] ?? null;
+    try {
+      kayitli ??= localStorage.getItem("kk-tema");
+    } catch {
+      /* gizli sekme vb. */
+    }
+    if (kayitli === "koyu") return "dark";
+    if (kayitli === "acik") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    const userLanguage = navigator.language;
-    i18n.changeLanguage(userLanguage.split("-")[0]);
-  }, [i18n]);
+  // Dil varsayılan olarak Türkçe (i18n.ts: lng "tr"); İngilizce isteyen üstteki EN düğmesini kullanır.
+  // Önceden tarayıcı diline göre İngilizce açılıyordu; ilanlar Türkiye'de paylaşılıyor.
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    const deger = next === "dark" ? "koyu" : "acik";
+    try {
+      localStorage.setItem("kk-tema", deger);
+    } catch {
+      /* gizli sekme vb. */
+    }
+    const alan = location.hostname.endsWith("kanakademi.com.tr") ? "; domain=.kanakademi.com.tr" : "";
+    document.cookie = `kk-tema=${deger}; path=/; max-age=31536000; SameSite=Lax${alan}`;
   };
 
   const handleInfoClick = async () => {
@@ -45,8 +62,8 @@ function App() {
             <meta charset="UTF-8">
             <style>                
                 .logo { width: 80px; margin-bottom: 20px; }
-                .containerr { background-color: #eeebe3; text-align: center; }
-                .main-title { font-size: 2.5em; font-weight: bold; margin: 10px 0; }
+                .containerr { text-align: center; }
+                .main-title { font-size: 2.5em; font-weight: 800; margin: 10px 0; color: #e3262f; }
             </style>
         </head>
         <body>
@@ -61,7 +78,8 @@ function App() {
       `,
       showConfirmButton: true,
       confirmButtonText: t("close"),
-      background: "#eeebe3",
+      background: "#ffffff",
+      confirmButtonColor: "#e3262f",
     });
   };
 
@@ -83,13 +101,21 @@ function App() {
     setIsPlaying(true);
   };
 
+  // kanakademi.com.tr ile aynı renkler ve yazı tipi
   const muiTheme = createTheme(
     {
       palette: {
         mode: theme,
+        primary: { main: "#e3262f", dark: "#b3121c", contrastText: "#fff" },
+        secondary: { main: "#1ba6df" },
+        ...(theme === "dark"
+          ? { background: { default: "#0e0a2e", paper: "#1b1546" } }
+          : { background: { default: "#f6f5fb", paper: "#ffffff" } }),
       },
+      shape: { borderRadius: 12 },
       typography: {
-        fontFamily: "Roboto, sans-serif",
+        fontFamily: '"Plus Jakarta Sans Variable", system-ui, sans-serif',
+        button: { textTransform: "none", fontWeight: 700 },
       },
     },
     trTR

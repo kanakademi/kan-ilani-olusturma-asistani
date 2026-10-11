@@ -1,61 +1,30 @@
 import type { TemplateModule, TemplateListItem } from "./types";
-import { Template1 } from "./Template1";
-import { Template2 } from "./Template2";
-import { Template3 } from "./Template3";
-import { Template4 } from "./Template4";
-import { Template5 } from "./Template5";
-import { Template6 } from "./Template6";
+import { BiletStory, DamlaStory, GeceStory, SeftaliStory } from "./stories";
 
 /**
- * Template Registry - Tüm template'leri merkezi olarak yönetir
- * Yeni bir template eklemek için:
- * 1. TemplateX klasörü oluştur (config.ts, TemplateXComponent.tsx, index.ts)
- * 2. Bu registry'ye import et ve templates array'ine ekle
+ * Template Registry — yeni şablon: stories.tsx'e bileşen, stories.css'e stil yaz, buraya ekle.
  */
-
-// Tüm template'ler sıralı array olarak (index bazlı erişim için)
 export const templates: TemplateModule[] = [
-    Template6,
-    Template3,
-    Template4,
-    Template5,
-    Template2,
-    Template1,
+    { Component: DamlaStory, config: { id: "damla", name: "Damla", selectorColor: "#d3172a", selectorInk: "#fff" } },
+    { Component: GeceStory, config: { id: "gece", name: "Gece", selectorColor: "#0e0a2e", selectorInk: "#fff" } },
+    { Component: BiletStory, config: { id: "bilet", name: "Bilet", selectorColor: "#fff8ef", selectorInk: "#c8102e" } },
+    { Component: SeftaliStory, config: { id: "seftali", name: "Şeftali", selectorColor: "#ffe0d8", selectorInk: "#b10f22" } },
 ];
 
-// ID bazlı erişim için Map
-const templateMap = new Map<string, TemplateModule>(
-    templates.map((t) => [t.config.id, t])
-);
+const templateMap = new Map<string, TemplateModule>(templates.map((t) => [t.config.id, t]));
 
-/**
- * Index ile template al (0-based)
- */
 export function getTemplateByIndex(index: number): TemplateModule | undefined {
     return templates[index];
 }
 
-/**
- * ID ile template al
- */
 export function getTemplateById(id: string): TemplateModule | undefined {
     return templateMap.get(id);
 }
 
-/**
- * Template selector için liste döndür
- */
 export function getTemplateList(): TemplateListItem[] {
-    return templates.map((t) => ({
-        id: t.config.id,
-        selectorColor: t.config.selectorColor,
-        selectorIcon: t.config.selectorIcon,
-    }));
+    return templates.map((t) => t.config);
 }
 
-/**
- * Toplam template sayısı
- */
 export function getTemplateCount(): number {
     return templates.length;
 }
