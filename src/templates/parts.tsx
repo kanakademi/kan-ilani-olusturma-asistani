@@ -5,6 +5,7 @@ import { capsTR } from "../utils/formUtils";
 
 // html2canvas SVG'yi ayrı resim olarak çizer: currentColor miras alınmaz, renk açıkça verilmeli
 const PATHS: Record<string, ReactNode> = {
+  drop: <path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z" />,
   user: (
     <>
       <circle cx="12" cy="8" r="4" />
