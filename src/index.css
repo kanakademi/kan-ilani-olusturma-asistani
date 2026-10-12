@@ -50,14 +50,11 @@ body {
   margin: 0;
   padding: 0 16px 32px;
 }
-/* başlık: sitedeki gibi gradyanlı vurgu */
+/* başlık: düz renk; asistan bir afiş değil, ciddi bir ihtiyaç formu (marka gradyanı yalnızca ince çizgilerde) */
 h2 {
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: var(--gradyan);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-text);
 }
 h2 + p {
   max-width: 640px;

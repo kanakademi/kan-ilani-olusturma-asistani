@@ -205,8 +205,8 @@
   font-size: 1.05rem;
   font-weight: 800;
   color: #fff;
-  background: var(--gradyan);
-  box-shadow: 0 8px 24px rgb(227 38 47 / 30%);
+  background: #c8102e;
+  box-shadow: 0 6px 18px rgb(200 16 46 / 25%);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .download-image-button:hover {

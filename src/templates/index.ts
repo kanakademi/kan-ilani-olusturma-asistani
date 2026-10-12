@@ -1,14 +1,13 @@
 import type { TemplateModule, TemplateListItem } from "./types";
-import { BiletStory, DamlaStory, GeceStory, SeftaliStory } from "./stories";
+import { GeceStory, KlasikStory, SicakStory } from "./stories";
 
 /**
- * Template Registry — yeni şablon: stories.tsx'e bileşen, stories.css'e stil yaz, buraya ekle.
+ * Template Registry — tek yerleşim, üç renk (stories.tsx / stories.css). Yeni renk: stories.css'e .il--<ad>, buraya satır.
  */
 export const templates: TemplateModule[] = [
-    { Component: DamlaStory, config: { id: "damla", name: "Damla", selectorColor: "#d3172a", selectorInk: "#fff" } },
+    { Component: KlasikStory, config: { id: "klasik", name: "Klasik", selectorColor: "#ffffff", selectorInk: "#c8102e" } },
     { Component: GeceStory, config: { id: "gece", name: "Gece", selectorColor: "#0e0a2e", selectorInk: "#fff" } },
-    { Component: BiletStory, config: { id: "bilet", name: "Bilet", selectorColor: "#fff8ef", selectorInk: "#c8102e" } },
-    { Component: SeftaliStory, config: { id: "seftali", name: "Şeftali", selectorColor: "#ffe0d8", selectorInk: "#b10f22" } },
+    { Component: SicakStory, config: { id: "sicak", name: "Sıcak", selectorColor: "#fff3f1", selectorInk: "#c8102e" } },
 ];
 
 const templateMap = new Map<string, TemplateModule>(templates.map((t) => [t.config.id, t]));
