@@ -17,10 +17,8 @@ export default function BloodDonationFormContainer() {
   const [showErrors, setShowErrors] = useState(false);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const [previewScale, setPreviewScale] = useState(1);
-  // telefonda önizleme altta sabit küçük resim; dokununca tam ekran açılır (indir düğmesi hep görünür)
-  const [previewOpen, setPreviewOpen] = useState(false);
 
-  // 360×640 görsel kutusuna sığacak kadar küçültülür (masaüstü 1, telefon çubuğu ~0.125, tam ekran ekrana göre); indirilen görsel yine 1080×1920
+  // 360×640 görsel kutusuna sığacak kadar küçültülür (masaüstü 1, telefonda üstte sabit alan ~0.55); indirilen görsel yine 1080×1920
   useLayoutEffect(() => {
     const el = previewRef.current;
     if (!el) return;
@@ -248,13 +246,9 @@ export default function BloodDonationFormContainer() {
         handleTemplateChange={handleTemplateChange}
       />
 
-      <aside
-        className={previewOpen ? "onizleme onizleme--acik" : "onizleme"}
-        aria-label={t("preview")}
-        onKeyDown={(e) => e.key === "Escape" && setPreviewOpen(false)}
-      >
+      <aside className="onizleme" aria-label={t("preview")}>
         <div className="onizleme__baslik">{t("preview")}</div>
-        <div className="onizleme__alan" ref={previewRef} onClick={() => setPreviewOpen(true)}>
+        <div className="onizleme__alan" ref={previewRef}>
           <div className="onizleme__kutu" style={{ width: 360 * previewScale, height: 640 * previewScale }}>
             <div className="onizleme__olcek" style={{ transform: `scale(${previewScale})` }}>
               {TemplateComponent && (
@@ -266,16 +260,10 @@ export default function BloodDonationFormContainer() {
             </div>
           </div>
         </div>
-        <div className="onizleme__eylemler">
-          {/* yalnızca telefonda görünür */}
-          <button type="button" className="onizleme__ac" aria-expanded={previewOpen} onClick={() => setPreviewOpen(!previewOpen)}>
-            {previewOpen ? t("close") : t("previewOpen")}
-          </button>
-          {/* eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
-          <button type="button" className="download-image-button" onClick={downloadImage}>
-            {t("downloadButtonAlt")}
-          </button>
-        </div>
+        {/* eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
+        <button type="button" className="download-image-button" onClick={downloadImage}>
+          {t("downloadButtonAlt")}
+        </button>
       </aside>
     </div>
   );

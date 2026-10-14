@@ -80,3 +80,6 @@ export function formatPhoneNumber(value: string): string {
   }
   return formatted;
 }
+
+// CSS text-transform yerine: html2canvas "i"yi Türkçe büyütmüyor (İHTİYACI → IHTIYACI)
+export const capsTR = (s: string) => s.toLocaleUpperCase("tr-TR");

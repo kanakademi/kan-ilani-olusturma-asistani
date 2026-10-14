@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { DonationInfo } from "../entities/DonationInfo";
 import { storyText } from "./storyText";
+import { capsTR } from "../utils/formUtils";
 
 // html2canvas SVG'yi ayrı resim olarak çizer: currentColor miras alınmaz, renk açıkça verilmeli
 const PATHS: Record<string, ReactNode> = {
@@ -40,9 +41,29 @@ export function Icon({ name, color, size = 17 }: { name: keyof typeof PATHS; col
   );
 }
 
-export function Brand() {
+const DROP = "M50 2C50 2 6 58 6 90a44 44 0 0 0 88 0C94 58 50 2 50 2Z";
+
+// Kan damlası; `stops` verilirse dikey/çapraz gradyanla boyanır
+export function Drop({ id, fill, stops, className }: { id: string; fill?: string; stops?: string[]; className?: string }) {
   return (
-    <span className="st-brand">
+    <svg className={className} viewBox="0 0 100 136" aria-hidden="true">
+      {stops && (
+        <defs>
+          <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+            {stops.map((c, i) => (
+              <stop key={c + i} offset={i / (stops.length - 1)} stopColor={c} />
+            ))}
+          </linearGradient>
+        </defs>
+      )}
+      <path d={DROP} fill={stops ? `url(#${id})` : fill} />
+    </svg>
+  );
+}
+
+export function Brand({ className }: { className?: string }) {
+  return (
+    <span className={`st-brand ${className ?? ""}`}>
       <span className="st-brand__logo">
         <img src="./assets/images/kan-akademi-logo.png" alt="" />
       </span>
@@ -54,13 +75,44 @@ export function Brand() {
 // Görselin ana öğesi: sitede kullanılan "A RH (-)" yazımı, tek boyda; 1 grup dev, 2 grup alt alta, 3–4 grup 2×2
 export function Groups({ d }: { d: DonationInfo }) {
   const { groups, anyGroup } = storyText(d);
-  if (anyGroup) return <div className="st-groups st-groups--any">Kan Grubu Fark Etmeksizin</div>;
+  if (anyGroup)
+    return (
+      <div className="st-groups st-groups--any">
+        <span>Kan Grubu</span>
+        <span>Fark Etmeksizin</span>
+      </div>
+    );
   const cells = groups.length ? groups : ["?"];
   return (
     <div className={`st-groups st-groups--n${cells.length}`}>
       {cells.map((g) => (
         <span key={g}>{g}</span>
       ))}
+    </div>
+  );
+}
+
+export function Chips({ d, className }: { d: DonationInfo; className?: string }) {
+  return (
+    <span className={`st-chips ${className ?? ""}`}>
+      {storyText(d).types.map((t) => (
+        <span key={t}>{t}</span>
+      ))}
+    </span>
+  );
+}
+
+// İkonlu bilgi satırı: ikon kutusu + küçük etiket + değer
+export function Field({ icon, label, value, ink }: { icon: keyof typeof PATHS; label: string; value: string; ink: string }) {
+  return (
+    <div className="st-field">
+      <span className="st-field__icon">
+        <Icon name={icon} color={ink} />
+      </span>
+      <span className="st-field__text">
+        <span className="st-label">{capsTR(label)}</span>
+        <span className="st-value">{value}</span>
+      </span>
     </div>
   );
 }

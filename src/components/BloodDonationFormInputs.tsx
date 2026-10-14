@@ -212,23 +212,22 @@ export default function BloodDonationFormInputs(props: InputProps) {
       </Section>
 
       <Section no={4} title={t("sectionTemplate")}>
-        <div className="sablonlar" role="radiogroup" aria-label={t("templateSelection")}>
+        <TextField
+          select
+          fullWidth
+          size="small"
+          margin="dense"
+          label={t("templateSelection")}
+          value={props.selectedTemplate}
+          onChange={(e) => props.handleTemplateChange(Number(e.target.value))}
+        >
           {getTemplateList().map((template, index) => (
-            <button
-              type="button"
-              role="radio"
-              key={template.id}
-              className="sablon"
-              aria-checked={props.selectedTemplate === index}
-              onClick={() => props.handleTemplateChange(index)}
-            >
-              <span className="sablon__renk" style={{ background: template.selectorColor, color: template.selectorInk }} aria-hidden="true">
-                A
-              </span>
+            <MenuItem key={template.id} value={index}>
+              <span className="sablon__renk" style={{ background: template.selectorColor }} aria-hidden="true" />
               {template.name}
-            </button>
+            </MenuItem>
           ))}
-        </div>
+        </TextField>
       </Section>
     </form>
   );
