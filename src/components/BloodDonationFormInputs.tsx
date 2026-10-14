@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import LabeledTextField from "./LabeledTextField";
-import { Checkbox, FormControlLabel, IconButton } from "@mui/material";
+import { Checkbox, FormControlLabel, IconButton, MenuItem, TextField } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
@@ -16,6 +16,7 @@ const BLOOD_TYPES = [
   ["Plazma", "plasma"],
   ["Kök Hücre", "stemCell"],
 ] as const;
+const BLOOD_TYPE_KEYS: Record<string, string> = Object.fromEntries(BLOOD_TYPES);
 
 interface InputProps {
   donationInfo: DonationInfo;
@@ -23,7 +24,7 @@ interface InputProps {
   showErrors: boolean;
   handleDonationInfoChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   toggleBloodGroup: (group: string) => void;
-  toggleBloodType: (type: string) => void;
+  setBloodType: (types: string[]) => void;
   handleDonationInfoPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDonationInfoDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleTemplateChange: (index: number) => void;
@@ -46,8 +47,7 @@ export default function BloodDonationFormInputs(props: InputProps) {
   const { donationInfo: d, showErrors } = props;
 
   const isEmpty = (val: string) => val.trim().length === 0;
-  const hasRegardless = d.bloodGroup.includes(REGARDLESS_BLOOD_GROUP);
-  // sınıra ulaşınca seçili olanlar tıklanabilir kalır ki biri bırakılıp başkası seçilebilsin
+  // sınıra ulaşınca seçili olanlar ve "fark etmeksizin" tıklanabilir kalır ki biri bırakılıp başkası seçilebilsin
   const limitReached = d.bloodGroup.length >= MAX_BLOOD_GROUP_SELECTION;
 
   const bloodGroupError = showErrors && d.bloodGroup.length === 0;
@@ -89,51 +89,54 @@ export default function BloodDonationFormInputs(props: InputProps) {
   return (
     <form className="form" onSubmit={(e) => e.preventDefault()}>
       <Section no={1} title={t("sectionNeed")}>
-        <div className="secim-baslik" id="kan-grubu">{t("bloodGroup")}</div>
-        <div className="secim secim--4" role="group" aria-labelledby="kan-grubu">
-          {BLOOD_GROUPS.map((group) => {
+        {/* uzun düğme ızgarası yerine açılır liste: ekranda tek alan görünür (eski sitedeki gibi) */}
+        <TextField
+          select
+          fullWidth
+          size="small"
+          margin="dense"
+          label={t("bloodGroup")}
+          value={d.bloodGroup}
+          error={bloodGroupError}
+          helperText={bloodGroupError ? t("requiredText") : t("maxGroupsHint", { max: MAX_BLOOD_GROUP_SELECTION })}
+          slotProps={{ select: { multiple: true, renderValue: (v) => (v as string[]).join(", ") } }}
+          onChange={(e) => {
+            const v = e.target.value as unknown as string[];
+            // tıklanan öğe = eski ve yeni seçim arasındaki fark; kurallar (en fazla 4, "fark etmeksizin" tek başına) toggleBloodGroup'ta
+            const changed = v.find((x) => !d.bloodGroup.includes(x)) ?? d.bloodGroup.find((x) => !v.includes(x));
+            if (changed) props.toggleBloodGroup(changed);
+          }}
+        >
+          {[...BLOOD_GROUPS, REGARDLESS_BLOOD_GROUP].map((group) => {
             const selected = d.bloodGroup.includes(group);
             return (
-              <button
-                key={group}
-                type="button"
-                className="secim__dugme"
-                aria-pressed={selected}
-                disabled={limitReached && !selected}
-                onClick={() => props.toggleBloodGroup(group)}
-              >
-                {group.replace(" RH (", " Rh").replace(")", "")}
-              </button>
+              <MenuItem key={group} value={group} disabled={limitReached && !selected && group !== REGARDLESS_BLOOD_GROUP}>
+                <Checkbox size="small" checked={selected} sx={{ p: 0, mr: 1 }} />
+                {group === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : group}
+              </MenuItem>
             );
           })}
-          <button
-            type="button"
-            className="secim__dugme secim__dugme--genis"
-            aria-pressed={hasRegardless}
-            onClick={() => props.toggleBloodGroup(REGARDLESS_BLOOD_GROUP)}
-          >
-            {t("regardlessOfBloodType")}
-          </button>
-        </div>
-        <p className={bloodGroupError ? "secim-not secim-not--hata" : "secim-not"}>
-          {bloodGroupError ? t("requiredText") : t("maxGroupsHint", { max: MAX_BLOOD_GROUP_SELECTION })}
-        </p>
+        </TextField>
 
-        <div className="secim-baslik" id="kan-turu">{t("bloodType")}</div>
-        <div className="secim secim--sar" role="group" aria-labelledby="kan-turu">
+        <TextField
+          select
+          fullWidth
+          size="small"
+          margin="dense"
+          label={t("bloodType")}
+          value={d.bloodType}
+          error={bloodTypeError}
+          helperText={bloodTypeError ? t("requiredText") : ""}
+          slotProps={{ select: { multiple: true, renderValue: (v) => (v as string[]).map((x) => t(BLOOD_TYPE_KEYS[x] ?? x)).join(", ") } }}
+          onChange={(e) => props.setBloodType(e.target.value as unknown as string[])}
+        >
           {BLOOD_TYPES.map(([value, key]) => (
-            <button
-              key={value}
-              type="button"
-              className="secim__dugme"
-              aria-pressed={d.bloodType.includes(value)}
-              onClick={() => props.toggleBloodType(value)}
-            >
+            <MenuItem key={value} value={value}>
+              <Checkbox size="small" checked={d.bloodType.includes(value)} sx={{ p: 0, mr: 1 }} />
               {t(key)}
-            </button>
+            </MenuItem>
           ))}
-        </div>
-        {bloodTypeError && <p className="secim-not secim-not--hata">{t("requiredText")}</p>}
+        </TextField>
       </Section>
 
       <Section no={2} title={t("sectionPatient")}>
@@ -209,17 +212,18 @@ export default function BloodDonationFormInputs(props: InputProps) {
       </Section>
 
       <Section no={4} title={t("sectionTemplate")}>
-        <div className="sablonlar" role="group" aria-label={t("templateSelection")}>
+        <div className="sablonlar" role="radiogroup" aria-label={t("templateSelection")}>
           {getTemplateList().map((template, index) => (
             <button
               type="button"
+              role="radio"
               key={template.id}
               className="sablon"
-              aria-pressed={props.selectedTemplate === index}
+              aria-checked={props.selectedTemplate === index}
               onClick={() => props.handleTemplateChange(index)}
             >
               <span className="sablon__renk" style={{ background: template.selectorColor, color: template.selectorInk }} aria-hidden="true">
-                {index + 1}
+                A
               </span>
               {template.name}
             </button>

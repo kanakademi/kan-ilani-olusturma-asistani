@@ -17,12 +17,14 @@ export default function BloodDonationFormContainer() {
   const [showErrors, setShowErrors] = useState(false);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const [previewScale, setPreviewScale] = useState(1);
+  // telefonda önizleme altta sabit küçük resim; dokununca tam ekran açılır (indir düğmesi hep görünür)
+  const [previewOpen, setPreviewOpen] = useState(false);
 
-  // 360px'lik görsel dar telefonda sığsın diye ekranda küçültülür; indirilen görsel yine 1080×1920
+  // 360×640 görsel kutusuna sığacak kadar küçültülür (masaüstü 1, telefon çubuğu ~0.125, tam ekran ekrana göre); indirilen görsel yine 1080×1920
   useLayoutEffect(() => {
     const el = previewRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setPreviewScale(Math.min(1, el.clientWidth / 360)));
+    const ro = new ResizeObserver(() => setPreviewScale(Math.min(1, el.clientWidth / 360, el.clientHeight / 640)));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -52,12 +54,7 @@ export default function BloodDonationFormContainer() {
     });
   };
 
-  const toggleBloodType = (type: string) => {
-    setDonationInfo((prev) => ({
-      ...prev,
-      bloodType: prev.bloodType.includes(type) ? prev.bloodType.filter((x) => x !== type) : [...prev.bloodType, type],
-    }));
-  };
+  const setBloodType = (bloodType: string[]) => setDonationInfo((prev) => ({ ...prev, bloodType }));
 
   const handleDonationInfoPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhoneNumber(e.target.value);
@@ -168,6 +165,8 @@ export default function BloodDonationFormContainer() {
         onclone: (doc) => {
           const preview = doc.querySelector<HTMLElement>(".onizleme__olcek");
           if (preview) preview.style.transform = "none";
+          const box = doc.querySelector<HTMLElement>(".onizleme__kutu");
+          if (box) box.style.overflow = "visible";
         },
       });
 
@@ -243,28 +242,40 @@ export default function BloodDonationFormContainer() {
         showErrors={showErrors}
         handleDonationInfoChange={handleDonationInfoChange}
         toggleBloodGroup={toggleBloodGroup}
-        toggleBloodType={toggleBloodType}
+        setBloodType={setBloodType}
         handleDonationInfoPhoneChange={handleDonationInfoPhoneChange}
         handleDonationInfoDateChange={handleDonationInfoDateChange}
         handleTemplateChange={handleTemplateChange}
       />
 
-      <aside className="onizleme" aria-label={t("preview")}>
+      <aside
+        className={previewOpen ? "onizleme onizleme--acik" : "onizleme"}
+        aria-label={t("preview")}
+        onKeyDown={(e) => e.key === "Escape" && setPreviewOpen(false)}
+      >
         <div className="onizleme__baslik">{t("preview")}</div>
-        <div className="onizleme__alan" ref={previewRef} style={{ height: 640 * previewScale }}>
-          <div className="onizleme__olcek" style={{ transform: `scale(${previewScale})` }}>
-            {TemplateComponent && (
-              <TemplateComponent
-                imageRef={imageRef}
-                donationInfo={donationInfo}
-              />
-            )}
+        <div className="onizleme__alan" ref={previewRef} onClick={() => setPreviewOpen(true)}>
+          <div className="onizleme__kutu" style={{ width: 360 * previewScale, height: 640 * previewScale }}>
+            <div className="onizleme__olcek" style={{ transform: `scale(${previewScale})` }}>
+              {TemplateComponent && (
+                <TemplateComponent
+                  imageRef={imageRef}
+                  donationInfo={donationInfo}
+                />
+              )}
+            </div>
           </div>
         </div>
-        {/* eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
-        <button type="button" className="download-image-button" onClick={downloadImage}>
-          {t("downloadButtonAlt")}
-        </button>
+        <div className="onizleme__eylemler">
+          {/* yalnızca telefonda görünür */}
+          <button type="button" className="onizleme__ac" aria-expanded={previewOpen} onClick={() => setPreviewOpen(!previewOpen)}>
+            {previewOpen ? t("close") : t("previewOpen")}
+          </button>
+          {/* eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
+          <button type="button" className="download-image-button" onClick={downloadImage}>
+            {t("downloadButtonAlt")}
+          </button>
+        </div>
       </aside>
     </div>
   );

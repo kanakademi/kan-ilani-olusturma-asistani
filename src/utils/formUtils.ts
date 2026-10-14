@@ -80,12 +80,3 @@ export function formatPhoneNumber(value: string): string {
   }
   return formatted;
 }
-
-// "AB RH (-)" → { abo: "AB", rh: "Rh−" }; "Kan Grubu Fark Etmeksizin" ve boş değer → null
-export function splitBloodGroup(value: string): { abo: string; rh: string } | null {
-  const m = value.match(/^(AB|A|B|0)\s*RH\s*\(([+-])\)$/i);
-  return m ? { abo: m[1], rh: m[2] === "-" ? "Rh−" : "Rh+" } : null;
-}
-
-// CSS text-transform yerine: html2canvas "i"yi Türkçe büyütmüyor (İHTİYACI → IHTIYACI)
-export const capsTR = (s: string) => s.toLocaleUpperCase("tr-TR");

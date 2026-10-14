@@ -1,5 +1,5 @@
 /* Kan ilanı şablonları — html2canvas'ın çizebildiği CSS: filter, blend-mode, clip-path, text-transform yok.
-   Ortak iskelet + şablon başına renk değişkenleri (--zemin, --ust, --metin, --grup, --alt, --alt-yazi) ve birkaç özel kural */
+   Ortak iskelet + şablon başına renk değişkenleri (--zemin, --metin, --soluk, --vurgu, --cizgi) */
 
 .st {
   position: relative;
@@ -7,8 +7,6 @@
   width: 360px;
   height: 640px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   font-family: "Plus Jakarta Sans Variable", system-ui, sans-serif;
   text-align: left;
   line-height: 1.3;
@@ -18,395 +16,147 @@
   box-sizing: border-box;
 }
 
+/* Instagram'ın üstte profil adı, altta "Mesaj gönder" kutusuyla kapattığı şeritler boş kalır */
 .il {
-  --metin: #111;
-  --grup: #ff4550;
-  --alt-yazi: #111;
+  padding: 88px 20px 96px;
   background: var(--zemin);
   color: var(--metin);
 }
-.il-sus {
-  position: absolute;
-  inset: 0;
-  width: 360px;
-  height: 640px;
-}
-.il-band,
-.il-top,
-.il-body,
-.il-foot {
-  position: relative; /* süs SVG'sinin üstünde */
+.il-ic {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-/* üst bant: koyu şerit, solda ad, sağda yuvarlak logo (eski şablonlarla aynı) */
-.il-band {
-  display: flex;
-  align-items: flex-end;
-  height: 52px;
-  padding: 0 10px 7px 12px;
-  background: #232126;
-  color: #fff;
-}
-.il-band .st-brand {
-  flex: 1;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  align-items: flex-end;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
 .st-brand {
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
+  padding-bottom: 10px;
+  font-size: 14px;
+  font-weight: 800;
+}
+/* marka gradyanı yalnızca bu ince çizgide (html2canvas border-image çizmez) */
+.st-brand::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e3262f, #9b3bb5, #1ba6df);
 }
 .st-brand__logo {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #fff;
 }
 .st-brand__logo img {
-  width: 18px;
+  width: 14px;
   height: auto;
 }
 
-/* kan grubu alanı */
-.il-top {
-  display: flex;
-  align-items: center;
-  height: 128px;
-  flex-shrink: 0;
-  padding: 0 18px;
-  background: var(--ust, transparent);
-}
+/* kan grubu: sitede kullanılan "A RH (-)" yazımı, tek boyda, büyük */
 .st-groups {
   display: grid;
-  gap: 2px 22px;
+  gap: 2px 16px;
+  padding: 14px 0 12px;
   font-weight: 800;
-  color: var(--grup);
-}
-.st-g {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-.st-g__abo {
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-.st-g__rh {
-  line-height: 1;
+  line-height: 1.02;
   letter-spacing: -0.02em;
+  color: var(--vurgu);
+  white-space: nowrap;
 }
-.st-groups--n1 .st-g__abo {
-  font-size: 84px;
+.st-groups--n1 {
+  font-size: 68px;
 }
-.st-groups--n1 .st-g__rh {
-  font-size: 36px;
+.st-groups--n2 {
+  font-size: 50px;
 }
-.st-groups--n2,
 .st-groups--n3,
 .st-groups--n4 {
   grid-template-columns: auto auto;
   justify-content: start;
-}
-.st-groups--n2 .st-g__abo {
-  font-size: 60px;
-}
-.st-groups--n2 .st-g__rh {
-  font-size: 26px;
-}
-.st-groups--n3 .st-g__abo,
-.st-groups--n4 .st-g__abo {
-  font-size: 44px;
-}
-.st-groups--n3 .st-g__rh,
-.st-groups--n4 .st-g__rh {
-  font-size: 20px;
+  font-size: 32px;
 }
 .st-groups--any {
-  display: flex;
-  flex-direction: column;
-  font-size: 36px;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: 34px;
+  white-space: normal;
 }
 
-/* bilgi alanı: üstte bağış türü/tarih/telefon, altta hasta/hastane/merkezler (merkezler kalan yeri doldurur) */
 .il-body {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px 14px 10px;
-}
-.il-a,
-.il-b {
-  display: flex;
-  flex-direction: column;
-}
-.il-b {
-  flex: 1;
-  min-height: 0;
+  border-top: 1px solid var(--cizgi);
 }
 .il-row {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 5px 0;
-  font-size: 14px;
-  line-height: 1.32;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--cizgi);
+  font-size: 13.5px;
 }
-.il-row > p {
-  flex: 1;
+.il-row > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.il-row p {
   min-width: 0;
   font-weight: 500;
 }
 .il-row b {
   font-weight: 800;
 }
-.il-ikon {
-  display: none;
-}
 .il-centers {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  flex-direction: column;
-  gap: 2px;
-}
-.il-centers > p {
-  flex: none;
-  width: 100%;
+  border-bottom: 0;
 }
 .il-centers [data-fit] {
   line-height: 1.38;
+  color: var(--soluk);
 }
 
-/* alt uyarı bandı. Alt ~30px'i Instagram'ın yanıt kutusu kapatır: yazı onun üstünde kalsın */
-.il-foot {
+/* iletişim uyarısı: alttaki mesaj kutusunun üstünde, okunur ve tek vurgu renginde */
+.il-uyari {
   flex-shrink: 0;
-  padding: 11px 10px 30px;
-  background: var(--alt);
-  color: var(--alt-yazi);
-  font-size: 13px;
+  padding: 9px 0 0;
+  border-top: 2px solid var(--vurgu);
+  color: var(--vurgu);
+  font-size: 13.5px;
   font-weight: 800;
   text-align: center;
-  letter-spacing: -0.01em;
 }
 
-/* ---------- 1 · Koyu: kırmızı çerçeveli koyu kutular, sağda gri ikon kutuları, sarı uyarı ---------- */
-.il--gece {
-  --zemin: #232126;
-  --metin: #fff;
-  --grup: #ff3b26;
-  --alt: #232126;
-  --alt-yazi: #f2ea1b;
+.il--acik {
+  --zemin: #ffffff;
+  --metin: #1a1730;
+  --soluk: #3d3a4f;
+  --vurgu: #c8102e;
+  --cizgi: #e4e2ea;
 }
-.il--gece .il-top {
-  margin: 0;
-  border: 6px solid #a30d0d;
-  border-bottom-width: 3px;
-  background: #232126;
+.il--acik .st-brand__logo {
+  border: 1px solid #e4e2ea;
 }
-.il--gece .il-body {
-  gap: 0;
-  padding: 0;
-  border: 6px solid #a30d0d;
-  border-top-width: 3px;
-  background: #a30d0d;
+.il--koyu {
+  --zemin: #1c1b1f;
+  --metin: #ffffff;
+  --soluk: #d6d4dc;
+  --vurgu: #ff4d55;
+  --cizgi: #3a3940;
 }
-.il--gece .il-a,
-.il--gece .il-b {
-  gap: 6px;
-}
-.il--gece .il-b {
-  margin-top: 6px;
-}
-.il--gece .il-row {
-  align-items: stretch;
-  padding: 0;
-  background: #232126;
-}
-.il--gece .il-row > p {
-  padding: 8px 10px;
-}
-.il--gece .il-ikon {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  flex-shrink: 0;
-  background: #9a9a9a;
-}
-.il--gece .il-centers .il-ikon {
-  display: none;
-}
-.il--gece .il-centers > p {
-  padding: 2px 10px;
-}
-.il--gece .il-centers > p:first-child {
-  padding-top: 8px;
-}
-
-/* ---------- 2 · Pembe: kan torbası ve kalbi tutan el, hortum kenardan iner ---------- */
-.il--pembe {
-  --zemin: #fef0ef;
-  --alt: #feaaa1;
-}
-.il--pembe .il-a {
-  padding-right: 92px;
-}
-.il--pembe .il-b {
-  padding-right: 108px;
-}
-
-/* ---------- 3 · Nane: nane rengi kan grubu alanı, pembe damla, alt bilgiler turkuaz çerçevede ---------- */
-.il--nane {
-  --zemin: #f4fdfc;
-  --ust: #84eae0;
-  --alt: #84eae0;
-}
-.il--nane .il-a {
-  padding-right: 92px;
-}
-.il--nane .il-b {
-  position: relative;
-  margin: 2px 10px 6px 0;
-  padding: 8px 12px 10px 16px;
-  border: 4px solid #12d1bd;
-  border-right: 0;
-  border-radius: 4px;
-}
-/* çerçevenin içinde açık renkli ikinci çizgi (eski şablondaki çift çerçeve) */
-.il--nane .il-b::before {
-  content: "";
-  position: absolute;
-  inset: 6px 30px 6px 6px;
-  border: 3px solid #c7f6f0;
-  border-right: 0;
-  border-radius: 2px;
-}
-
-/* ---------- 4 · Retro: krem kart, kenarlarda kırmızı/mavi kareli bloklar, lacivert çerçeve ---------- */
-.il--retro {
-  --zemin: #f7f3ea;
-  --grup: #f74e47;
-  --alt: #21213a;
-  --alt-yazi: #ff5a52;
-}
-.il--retro .il-body {
-  margin: 0 10px;
-  padding: 14px 14px 10px;
-  background: #f7f3ea;
-  border: 3px solid #21213a;
-  border-bottom: 0;
-}
-.il--retro .il-centers::before {
-  content: "";
-  display: block;
-  width: 52px;
-  height: 4px;
-  margin: 2px 0 10px;
-  border-radius: 2px;
-  background: #21213a;
-}
-
-/* ---------- 5 · Turuncu: turuncu kan grubu alanı, noktalı ve çizgili satırlar ---------- */
-.il--turuncu {
-  --zemin: #fff3e3;
-  --ust: #ff9900;
-  --grup: #111;
-  --alt: #232126;
-  --alt-yazi: #ff9900;
-}
-.il--turuncu .il-top {
-  margin-top: 6px;
-  height: 122px;
-}
-.il--turuncu .il-body {
-  gap: 0;
-}
-.il--turuncu .il-a .il-row {
-  margin-left: 14px;
-  padding: 6px 0 6px 16px;
-  border-bottom: 1px solid #3a3a3a;
-  background: radial-gradient(circle at 4px 13px, #e7b39f 4px, transparent 4.5px);
-}
-.il--turuncu .il-a .il-row:last-child {
-  border-bottom: 0;
-}
-.il--turuncu .il-b {
-  border-top: 1px solid #3a3a3a;
-}
-.il--turuncu .il-b .il-row {
-  padding: 7px 4px;
-  border-bottom: 1px solid #3a3a3a;
-}
-.il--turuncu .il-b .il-centers {
-  border-bottom: 0;
-}
-
-/* ---------- 6 · Çerçeve: beyaz, kırmızı damla, alt bilgiler kırmızı yuvarlak çerçevede ikonlu ---------- */
-.il--cerceve {
-  --zemin: #fdfcfa;
-  --grup: #111;
-  --alt: #232126;
-  --alt-yazi: #ff3b3b;
-}
-.il--cerceve .il-a {
-  padding-right: 92px;
-}
-.il--cerceve .il-b {
-  padding: 8px 12px 10px;
-  border: 2.5px solid #e02424;
-  border-radius: 16px;
-  background: #fff;
-}
-.il--cerceve .il-b .il-row {
-  flex-direction: row-reverse;
-}
-.il--cerceve .il-b .il-ikon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #fde2e2;
-}
-.il--cerceve .il-b .il-ikon svg {
-  width: 14px;
-  height: 14px;
-}
-.il--cerceve .il-centers {
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  align-content: start;
-  column-gap: 8px;
-}
-.il--cerceve .il-centers .il-ikon {
-  grid-row: 1;
-  grid-column: 1;
-}
-.il--cerceve .il-centers > p:first-child {
-  grid-column: 2;
-}
-.il--cerceve .il-centers [data-fit] {
-  grid-column: 1 / -1;
-}
-
-/* ---------- 7 · Lavanta: lila zemin, kalpli lacivert damla ---------- */
-.il--lavanta {
-  --zemin: #f7efff;
-  --grup: #4847ef;
-  --alt: #c9b1e1;
-  --alt-yazi: #4847ef;
-}
-.il--lavanta .il-a {
-  padding-right: 110px;
+.il--lacivert {
+  --zemin: #0e0a2e;
+  --metin: #ffffff;
+  --soluk: #d3d0ea;
+  --vurgu: #ff4d55;
+  --cizgi: #2e2862;
 }

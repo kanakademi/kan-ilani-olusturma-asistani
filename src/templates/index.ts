@@ -1,18 +1,14 @@
 import type { TemplateModule, TemplateListItem } from "./types";
-import { CerceveStory, GeceStory, LavantaStory, NaneStory, PembeStory, RetroStory, TuruncuStory } from "./stories";
+import { AcikStory, KoyuStory, LacivertStory } from "./stories";
 
 /**
- * Template Registry — eski Kan Akademi uygulamasının yedi şablonu, aynı sıra ve renklerle (stories.tsx / stories.css).
- * Yeni şablon: stories.css'e .il--<ad>, gerekirse stories.tsx SUSLER'e süs, buraya satır.
+ * Template Registry — sade şablonlar (stories.tsx / stories.css).
+ * Yeni şablon: stories.css'e .il--<ad>, stories.tsx'e IKON rengi ve dışa aktarım, buraya satır.
  */
 export const templates: TemplateModule[] = [
-    { Component: GeceStory, config: { id: "gece", name: "Koyu", selectorColor: "#232126", selectorInk: "#ff3b26" } },
-    { Component: PembeStory, config: { id: "pembe", name: "Pembe", selectorColor: "#fef0ef", selectorInk: "#ff4550" } },
-    { Component: NaneStory, config: { id: "nane", name: "Nane", selectorColor: "#84eae0", selectorInk: "#1a1730" } },
-    { Component: RetroStory, config: { id: "retro", name: "Retro", selectorColor: "#f74e47", selectorInk: "#fff" } },
-    { Component: TuruncuStory, config: { id: "turuncu", name: "Turuncu", selectorColor: "#ff9900", selectorInk: "#1a1730" } },
-    { Component: CerceveStory, config: { id: "cerceve", name: "Çerçeve", selectorColor: "#fdfcfa", selectorInk: "#e02424" } },
-    { Component: LavantaStory, config: { id: "lavanta", name: "Lavanta", selectorColor: "#4847ef", selectorInk: "#fff" } },
+    { Component: AcikStory, config: { id: "acik", name: "Açık", selectorColor: "#ffffff", selectorInk: "#c8102e" } },
+    { Component: KoyuStory, config: { id: "koyu", name: "Koyu", selectorColor: "#1c1b1f", selectorInk: "#ff4d55" } },
+    { Component: LacivertStory, config: { id: "lacivert", name: "Lacivert", selectorColor: "#0e0a2e", selectorInk: "#ff4d55" } },
 ];
 
 const templateMap = new Map<string, TemplateModule>(templates.map((t) => [t.config.id, t]));

@@ -55,6 +55,7 @@ i18n.use(initReactI18next).init({
         sectionTemplate: "Şablon",
         maxGroupsHint: "En fazla {{max}} grup seçilebilir.",
         preview: "Önizleme",
+        previewOpen: "Büyüt",
       },
     },
     en: {
@@ -109,6 +110,7 @@ i18n.use(initReactI18next).init({
         sectionTemplate: "Template",
         maxGroupsHint: "Up to {{max}} groups can be selected.",
         preview: "Preview",
+        previewOpen: "Enlarge",
       },
     },
   },

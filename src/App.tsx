@@ -51,9 +51,14 @@ function App() {
   };
 
   const handleInfoClick = async () => {
-    const res = await fetch(import.meta.env.VITE_COUNTER_API);
-    const json = await res.json();
-    const count = Number(json.counter ?? 0).toLocaleString(i18n.language);
+    // sayaç sunucusu yanıt vermezse pencere yine açılsın (önceden hiçbir şey olmuyordu)
+    let count = "—";
+    try {
+      const json = await (await fetch(import.meta.env.VITE_COUNTER_API)).json();
+      if (json.counter != null) count = Number(json.counter).toLocaleString(i18n.language);
+    } catch {
+      /* ağ ya da sunucu hatası */
+    }
     Swal.fire({
       html: `
         <!DOCTYPE html>
