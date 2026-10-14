@@ -44,13 +44,36 @@
 }
 
 /* şablon seçimi açılır listede: adın yanında küçük renk örneği */
-.sablon__renk {
-  flex-shrink: 0;
-  width: 14px;
-  height: 22px;
-  margin-right: 10px;
-  border: 1px solid var(--cizgi);
-  border-radius: 3px;
+.sablon-baslik {
+  margin: 12px 0 8px;
+  color: var(--color-muted);
+}
+.sablonlar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px; /* 7×36 + 6×12 = 324px: 360px telefonda da tek sıra */
+}
+.sablon {
+  flex-shrink: 0; /* yoksa daire elipse döner */
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 3px solid var(--cizgi);
+  border-radius: 50%;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.sablon[aria-pressed="true"] {
+  border-color: var(--color-text);
+}
+.sablon:focus-visible {
+  outline: 3px solid var(--mavi);
+  outline-offset: 2px;
 }
 
 .onizleme {

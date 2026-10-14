@@ -6,12 +6,12 @@ import { CerceveStory, GeceStory, LavantaStory, NaneStory, PembeStory, RetroStor
  * Yeni şablon: stories.css'e .il--<ad>, gerekirse stories.tsx SUSLER'e süs, buraya satır.
  */
 export const templates: TemplateModule[] = [
-    { Component: GeceStory, config: { id: "gece", name: "Koyu", selectorColor: "#232126", selectorInk: "#ff3b26" } },
-    { Component: PembeStory, config: { id: "pembe", name: "Pembe", selectorColor: "#fef0ef", selectorInk: "#ff4550" } },
-    { Component: NaneStory, config: { id: "nane", name: "Nane", selectorColor: "#84eae0", selectorInk: "#1a1730" } },
+    { Component: GeceStory, config: { id: "gece", name: "Koyu", selectorColor: "#534e58", selectorInk: "#fff" } },
+    { Component: PembeStory, config: { id: "pembe", name: "Pembe", selectorColor: "#ff454f", selectorInk: "#fff" } },
+    { Component: NaneStory, config: { id: "nane", name: "Nane", selectorColor: "#89e8e0", selectorInk: "#1a1730" } },
     { Component: RetroStory, config: { id: "retro", name: "Retro", selectorColor: "#f74e47", selectorInk: "#fff" } },
     { Component: TuruncuStory, config: { id: "turuncu", name: "Turuncu", selectorColor: "#ff9900", selectorInk: "#1a1730" } },
-    { Component: CerceveStory, config: { id: "cerceve", name: "Çerçeve", selectorColor: "#fdfcfa", selectorInk: "#e02424" } },
+    { Component: CerceveStory, config: { id: "cerceve", name: "Çerçeve", selectorColor: "#da2f47", selectorInk: "#fff" } },
     { Component: LavantaStory, config: { id: "lavanta", name: "Lavanta", selectorColor: "#4847ef", selectorInk: "#fff" } },
 ];
 

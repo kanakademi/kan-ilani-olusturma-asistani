@@ -192,22 +192,24 @@ export default function BloodDonationFormInputs(props: InputProps) {
           helperText={locationError ? t("requiredText") : `${d.location.length}/330`}
         />
 
-        <TextField
-          select
-          fullWidth
-          size="small"
-          margin="dense"
-          label={t("templateSelection")}
-          value={props.selectedTemplate}
-          onChange={(e) => props.handleTemplateChange(Number(e.target.value))}
-        >
+        {/* PR #46'daki gibi numaralı renkli daireler; dar ekranda alt satıra geçer */}
+        <div className="sablon-baslik" id="sablon-baslik">{t("templateSelection")}</div>
+        <div className="sablonlar" role="group" aria-labelledby="sablon-baslik">
           {getTemplateList().map((template, index) => (
-            <MenuItem key={template.id} value={index}>
-              <span className="sablon__renk" style={{ background: template.selectorColor }} aria-hidden="true" />
-              {template.name}
-            </MenuItem>
+            <button
+              type="button"
+              key={template.id}
+              className="sablon"
+              title={template.name}
+              aria-label={template.name}
+              aria-pressed={props.selectedTemplate === index}
+              style={{ background: template.selectorColor, color: template.selectorInk }}
+              onClick={() => props.handleTemplateChange(index)}
+            >
+              {index + 1}
+            </button>
           ))}
-        </TextField>
+        </div>
     </form>
   );
 }
