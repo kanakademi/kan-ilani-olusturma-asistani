@@ -7,11 +7,11 @@
   --mavi: #1ba6df;
   --gece: #0e0a2e;
   --gradyan: linear-gradient(135deg, #e3262f 0%, #9b3bb5 50%, #1ba6df 100%);
-  --color-bg: #0e0a2e;
+  --color-bg: #111013;
   --color-text: rgba(255, 255, 255, 0.9);
-  --color-muted: #b9b5d6;
-  --cizgi: #3a3470;
-  --yuzey: #1b1546;
+  --color-muted: #b5b3ba;
+  --cizgi: #38363d;
+  --yuzey: #1c1b1f;
   --hata: #ff6b6b;
   font-family: "Plus Jakarta Sans Variable", system-ui, sans-serif;
 
@@ -30,13 +30,14 @@
   --hata: #c62828;
 }
 
+/* koyu tema siyah: sadelik ve durumun ciddiyeti için (sitenin laciverti yerine) */
 [data-theme="dark"] {
   color-scheme: light dark;
-  --color-bg: #0e0a2e;
+  --color-bg: #111013;
   --color-text: rgba(255, 255, 255, 0.9);
-  --color-muted: #b9b5d6;
-  --cizgi: #3a3470;
-  --yuzey: #1b1546;
+  --color-muted: #b5b3ba;
+  --cizgi: #38363d;
+  --yuzey: #1c1b1f;
   --hata: #ff6b6b;
 }
 

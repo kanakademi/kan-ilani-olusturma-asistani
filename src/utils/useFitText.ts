@@ -1,6 +1,6 @@
 import { useLayoutEffect, type RefObject } from "react";
 
-// Kutudan taşan [data-fit] yazısını sığana kadar küçültür; indirilen görselde metin kesilmesin
+// Kutudan (yükseklik ya da genişlik) taşan [data-fit] yazısını sığana kadar küçültür; indirilen görselde metin kesilmesin
 export function useFitText(box: RefObject<HTMLElement | null>, start: number, text: string) {
   useLayoutEffect(() => {
     const el = box.current;
@@ -9,7 +9,7 @@ export function useFitText(box: RefObject<HTMLElement | null>, start: number, te
     const fit = () => {
       let size = start;
       target.style.fontSize = `${size}px`;
-      while (el.scrollHeight > el.clientHeight && size > 8) {
+      while ((el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth || target.scrollWidth > target.clientWidth) && size > 8) {
         size -= 0.5;
         target.style.fontSize = `${size}px`;
       }

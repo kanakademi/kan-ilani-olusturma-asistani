@@ -72,22 +72,19 @@ export function Brand({ className }: { className?: string }) {
   );
 }
 
-// Görselin ana öğesi: sitede kullanılan "A RH (-)" yazımı, tek boyda; 1 grup dev, 2 grup alt alta, 3–4 grup 2×2
+// Görselin ana öğesi: tek kan grubu, sitede kullanılan "A RH (-)" yazımıyla; boyu stories.tsx alana göre ayarlar
 export function Groups({ d }: { d: DonationInfo }) {
   const { groups, anyGroup } = storyText(d);
   if (anyGroup)
     return (
-      <div className="st-groups st-groups--any">
+      <div className="st-groups st-groups--any" data-fit>
         <span>Kan Grubu</span>
         <span>Fark Etmeksizin</span>
       </div>
     );
-  const cells = groups.length ? groups : ["?"];
   return (
-    <div className={`st-groups st-groups--n${cells.length}`}>
-      {cells.map((g) => (
-        <span key={g}>{g}</span>
-      ))}
+    <div className="st-groups" data-fit>
+      {groups[0]}
     </div>
   );
 }

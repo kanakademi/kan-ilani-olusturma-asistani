@@ -29,34 +29,6 @@
   max-width: 480px;
 }
 
-/* bölümler: kutu yerine numara + marka gradyanlı çizgi */
-.bolum {
-  min-width: 0;
-  margin: 0 0 28px;
-  padding: 0;
-  border: 0;
-}
-.bolum__baslik {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  width: 100%;
-  margin-bottom: 14px;
-  padding: 0 0 8px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  border-bottom: 2px solid;
-  border-image: var(--gradyan) 1;
-}
-.bolum__no {
-  font-size: 0.85rem;
-  font-variant-numeric: tabular-nums;
-  background: var(--gradyan);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 .tarih-satiri {
   display: flex;
   flex-wrap: wrap;

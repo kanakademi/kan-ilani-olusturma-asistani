@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 import { useTranslation } from "react-i18next";
 import "./BloodDonationFormContainer.css";
 import { formatDateToTurkish, formatPhoneNumber, hashData } from "../utils/formUtils";
-import { type DonationInfo, initialDonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
+import { type DonationInfo, initialDonationInfo } from "../entities/DonationInfo";
 import BloodDonationFormInputs from "./BloodDonationFormInputs";
 import { getTemplateByIndex } from "../templates";
 
@@ -39,18 +39,8 @@ export default function BloodDonationFormContainer() {
     }));
   };
 
-  const toggleBloodGroup = (group: string) => {
-    setDonationInfo((prev) => {
-      const current = prev.bloodGroup;
-      let value: string[];
-      if (current.includes(group)) value = current.filter((g) => g !== group);
-      // "Fark etmeksizin" diğer gruplarla birlikte seçilemez; birini seçmek ötekini bırakır
-      else if (group === REGARDLESS_BLOOD_GROUP) value = [group];
-      else value = [...current.filter((g) => g !== REGARDLESS_BLOOD_GROUP), group];
-      if (value.length > MAX_BLOOD_GROUP_SELECTION) return prev; // düğme zaten kapalı; koruma
-      return { ...prev, bloodGroup: value };
-    });
-  };
+  // eski uygulamadaki gibi tek kan grubu (ya da "fark etmeksizin"); ilanda en büyük boyda yazılır
+  const setBloodGroup = (group: string) => setDonationInfo((prev) => ({ ...prev, bloodGroup: [group] }));
 
   const setBloodType = (bloodType: string[]) => setDonationInfo((prev) => ({ ...prev, bloodType }));
 
@@ -239,7 +229,7 @@ export default function BloodDonationFormContainer() {
         selectedTemplate={selectedTemplateIndex}
         showErrors={showErrors}
         handleDonationInfoChange={handleDonationInfoChange}
-        toggleBloodGroup={toggleBloodGroup}
+        setBloodGroup={setBloodGroup}
         setBloodType={setBloodType}
         handleDonationInfoPhoneChange={handleDonationInfoPhoneChange}
         handleDonationInfoDateChange={handleDonationInfoDateChange}

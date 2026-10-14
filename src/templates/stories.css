@@ -41,10 +41,10 @@
 /* üst bant: koyu şerit, solda ad, sağda yuvarlak logo (eski şablonlarla aynı) */
 .il-band {
   display: flex;
-  align-items: flex-end;
-  height: 100px; /* Instagram profil satırı ilk ~88px'i kapatır; ad bandın altında, onun altında kalır */
+  align-items: center;
+  height: 61px; /* eski şablonlardaki bant (183/1920) */
   flex-shrink: 0;
-  padding: 0 10px 7px 12px;
+  padding: 0 10px 0 12px;
   background: #232126;
   color: #fff;
 }
@@ -52,8 +52,8 @@
   flex: 1;
   flex-direction: row-reverse;
   justify-content: space-between;
-  align-items: flex-end;
-  font-size: 15px;
+  align-items: center;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
@@ -79,7 +79,7 @@
 .il-top {
   display: flex;
   align-items: center;
-  height: 112px;
+  height: 140px;
   flex-shrink: 0;
   padding: 0 18px;
   background: var(--ust, transparent);
@@ -90,26 +90,14 @@
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.02em;
+  max-width: 100%; /* taşma ölçülebilsin: kenar boşluğu dahil sığana kadar küçülür */
   white-space: nowrap;
   color: var(--grup);
 }
-/* "A RH (-)" tek parça, tek boy (eski şablonlardaki gibi) */
-.st-groups--n1 {
-  font-size: 66px;
-}
-.st-groups--n2 {
-  font-size: 46px;
-}
-.st-groups--n3,
-.st-groups--n4 {
-  grid-template-columns: auto auto;
-  justify-content: start;
-  font-size: 32px;
-}
+/* "A RH (-)" tek parça; yazı boyu alanı dolduracak kadar büyük (useFitText genişliğe göre küçültür) */
 .st-groups--any {
   display: flex;
   flex-direction: column;
-  font-size: 38px;
   line-height: 1.05;
 }
 
@@ -171,11 +159,14 @@
 }
 
 
-/* alt uyarı bandı. Alt ~90px'i Instagram'ın "Mesaj gönder" kutusu kapatır: yazı bandın üstünde, onun üstünde kalır */
+/* alt uyarı bandı: eski şablonlardaki yükseklik (120/1920), yazı ortada */
 .il-foot {
   flex-shrink: 0;
-  height: 110px;
-  padding: 12px 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 8px;
   background: var(--alt);
   color: var(--alt-yazi);
   font-size: 13px;
@@ -243,10 +234,10 @@
   --alt: #feaaa1;
 }
 .il--pembe .il-a {
-  padding-right: 72px;
+  padding-right: 92px;
 }
 .il--pembe .il-b {
-  padding-right: 84px;
+  padding-right: 108px;
 }
 
 /* ---------- 3 · Nane: nane rengi kan grubu alanı, pembe damla, alt bilgiler turkuaz çerçevede ---------- */
@@ -310,7 +301,7 @@
 }
 .il--turuncu .il-top {
   margin-top: 6px;
-  height: 106px;
+  height: 134px;
 }
 .il--turuncu .il-body {
   gap: 0;

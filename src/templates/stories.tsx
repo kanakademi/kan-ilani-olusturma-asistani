@@ -1,6 +1,6 @@
 import { useRef, type ReactNode } from "react";
 import type { TemplateProps } from "./types";
-import type { DonationInfo } from "../entities/DonationInfo";
+import { REGARDLESS_BLOOD_GROUP, type DonationInfo } from "../entities/DonationInfo";
 import { Brand, Groups, Icon } from "./parts";
 import { storyText } from "./storyText";
 import { useFitText } from "../utils/useFitText";
@@ -12,8 +12,7 @@ import "./stories.css";
  * PNG arka plan yerine CSS + vektörle: her çözünürlükte net, yazı alanları içeriğe göre uzar.
  * Ortak iskelet: üst bant, kan grubu alanı, "Bağış türü/Tarih/Telefon", "Hasta/Hastane/Merkezler", alt uyarı bandı.
  * Süsler kartın tamamını kaplayan tek SVG'de (360×640 koordinat), yazıların arkasında.
- * Instagram üstte profil adını, altta "Mesaj gönder" kutusunu kartın üstüne çizer: üst bant 100px, alt bant 110px;
- * "Kan Akademi" bandın altında, uyarı bandın üstünde kalır, eski oranlar arada korunur.
+ * Bant yükseklikleri eski şablonlardaki gibi (üst 61px, alt 40px), yazılar bantların ortasında.
  */
 
 type IconName = Parameters<typeof Icon>[0]["name"];
@@ -50,10 +49,10 @@ const IKON: Record<string, string> = { gece: "#232126" };
 
 const DROP = "M50 2C50 2 6 58 6 90a44 44 0 0 0 88 0C94 58 50 2 50 2Z";
 
-// Her şablonun süsü; koordinatlar kartın 360×640 düzeninde (üst bant 0–100, kan grubu alanı 100–228, alt bant 530'dan sonra)
+// Her şablonun süsü; koordinatlar kartın 360×640 düzeninde (üst bant 0–61, kan grubu alanı 61–201, alt bant 600'den sonra)
 const SUSLER: Record<string, ReactNode> = {
   pembe: (
-    <g transform="translate(360 228) scale(0.76) translate(-360 -180)">
+    <g transform="translate(0 21)">
       {/* kan torbası, hortum sağ kenardan aşağı inip kalp düğümüyle kola bağlanır */}
       <path d="M318 196 C318 182 350 180 350 206 L350 520 C350 548 322 552 322 534 C322 520 342 520 342 536 C342 560 318 566 300 560" fill="none" stroke="#ff4550" strokeWidth="2" />
       <g transform="translate(272 190)">
@@ -83,7 +82,7 @@ const SUSLER: Record<string, ReactNode> = {
     </g>
   ),
   nane: (
-    <g transform="translate(266 242) scale(0.66)">
+    <g transform="translate(266 215) scale(0.66)">
       <path d={DROP} fill="#ffd3de" transform="translate(-12 6)" />
       <path d={DROP} fill="#ffe4eb" fillOpacity="0.8" stroke="#f43f6e" strokeWidth="7" strokeLinejoin="round" />
       <path d="M30 92 C30 108 40 116 56 116" fill="none" stroke="#f43f6e" strokeWidth="7" strokeLinecap="round" />
@@ -96,15 +95,15 @@ const SUSLER: Record<string, ReactNode> = {
           <path d="M12 0H0V12" fill="none" stroke="#1a1730" strokeOpacity="0.22" strokeWidth="1" />
         </pattern>
       </defs>
-      <rect x="0" y="228" width="360" height="151" fill="#f74e47" />
-      <rect x="0" y="379" width="360" height="151" fill="#1f6fbf" />
-      <rect x="180" y="228" width="180" height="151" fill="#1f6fbf" />
-      <rect x="180" y="379" width="180" height="151" fill="#f74e47" />
-      <rect x="0" y="228" width="360" height="302" fill="url(#il-izgara)" />
+      <rect x="0" y="201" width="360" height="200" fill="#f74e47" />
+      <rect x="0" y="401" width="360" height="199" fill="#1f6fbf" />
+      <rect x="180" y="201" width="180" height="200" fill="#1f6fbf" />
+      <rect x="180" y="401" width="180" height="199" fill="#f74e47" />
+      <rect x="0" y="201" width="360" height="399" fill="url(#il-izgara)" />
     </>
   ),
   // 6 · Beyaz: sağ kenardan inen büyük pembe damla (eski şablon 6)
-  damla: <path d="M360 226 L266 392 C252 418 246 444 246 468 C246 536 298 588 360 600 Z" fill="#e87a87" />,
+  damla: <path d="M360 205 L266 371 C252 397 246 423 246 447 C246 515 298 567 360 600 Z" fill="#e87a87" />,
 };
 
 function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps["imageRef"]; tema: string }) {
@@ -113,6 +112,9 @@ function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps[
   // uzun ad/hastane/merkez yazılınca bütün bilgi satırları birlikte küçülür; hiçbir satır kaybolmaz
   const bodyRef = useRef<HTMLDivElement | null>(null);
   useFitText(bodyRef, 14, tema + JSON.stringify(d));
+  // kan grubu alanı dolduracak kadar büyük: 84px'ten başlar, sığmazsa küçülür ("AB RH (-)" ~70px)
+  const topRef = useRef<HTMLElement | null>(null);
+  useFitText(topRef, d.bloodGroup.includes(REGARDLESS_BLOOD_GROUP) ? 44 : 84, tema + d.bloodGroup.join());
   return (
     <div className={`st il il--${tema}`} ref={imageRef}>
       {SUSLER[tema] && (
@@ -123,7 +125,7 @@ function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps[
       <header className="il-band">
         <Brand />
       </header>
-      <section className="il-top">
+      <section className="il-top" ref={topRef}>
         <Groups d={d} />
       </section>
       <div className="il-body" ref={bodyRef}>

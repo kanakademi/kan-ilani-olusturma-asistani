@@ -1,10 +1,9 @@
 import { formatDateToTurkish } from "../utils/formUtils";
 
 export const REGARDLESS_BLOOD_GROUP = "Kan Grubu Fark Etmeksizin";
-export const MAX_BLOOD_GROUP_SELECTION = 4;
 
 export interface DonationInfo {
-  bloodGroup: string[]; // en fazla 4 grup ya da yalnızca REGARDLESS_BLOOD_GROUP
+  bloodGroup: string[]; // tek öğe: bir grup ya da REGARDLESS_BLOOD_GROUP
   bloodType: string[]
   fullName: string;
   phone: string;

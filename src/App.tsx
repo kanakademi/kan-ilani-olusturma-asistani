@@ -15,7 +15,7 @@ function App() {
   const { t, i18n } = useTranslation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // tema kanakademi.com.tr ile ortak: aynı alan adında "kk-tema" anahtarı (koyu/acik); yoksa sistem tercihi
+  // tema kanakademi.com.tr ile ortak: aynı alan adında "kk-tema" anahtarı (koyu/acik); yoksa koyu
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     // önce .kanakademi.com.tr çerezi (site, Kanhoot ve asistan ortak), sonra eski localStorage kaydı
     let kayitli: string | null = document.cookie.match(/(?:^|; )kk-tema=(koyu|acik)/)?.[1] ?? null;
@@ -24,9 +24,8 @@ function App() {
     } catch {
       /* gizli sekme vb. */
     }
-    if (kayitli === "koyu") return "dark";
-    if (kayitli === "acik") return "light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    // seçim yoksa koyu: sadelik ve durumun ciddiyeti için tercih edilen görünüm
+    return kayitli === "acik" ? "light" : "dark";
   });
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -114,7 +113,7 @@ function App() {
         primary: { main: "#e3262f", dark: "#b3121c", contrastText: "#fff" },
         secondary: { main: "#1ba6df" },
         ...(theme === "dark"
-          ? { background: { default: "#0e0a2e", paper: "#1b1546" } }
+          ? { background: { default: "#111013", paper: "#1c1b1f" } }
           : { background: { default: "#f6f5fb", paper: "#ffffff" } }),
       },
       shape: { borderRadius: 12 },

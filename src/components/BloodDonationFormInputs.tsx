@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import LabeledTextField from "./LabeledTextField";
 import { Checkbox, FormControlLabel, IconButton, MenuItem, TextField } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
+import { type DonationInfo, REGARDLESS_BLOOD_GROUP } from "../entities/DonationInfo";
 import { getTemplateList } from "../templates";
 
 const BLOOD_GROUPS = ["A RH (+)", "A RH (-)", "B RH (+)", "B RH (-)", "AB RH (+)", "AB RH (-)", "0 RH (+)", "0 RH (-)"];
@@ -23,23 +22,11 @@ interface InputProps {
   selectedTemplate: number;
   showErrors: boolean;
   handleDonationInfoChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  toggleBloodGroup: (group: string) => void;
+  setBloodGroup: (group: string) => void;
   setBloodType: (types: string[]) => void;
   handleDonationInfoPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDonationInfoDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleTemplateChange: (index: number) => void;
-}
-
-function Section({ no, title, children }: { no: number; title: string; children: ReactNode }) {
-  return (
-    <fieldset className="bolum">
-      <legend className="bolum__baslik">
-        <span className="bolum__no">{String(no).padStart(2, "0")}</span>
-        {title}
-      </legend>
-      {children}
-    </fieldset>
-  );
 }
 
 export default function BloodDonationFormInputs(props: InputProps) {
@@ -47,8 +34,6 @@ export default function BloodDonationFormInputs(props: InputProps) {
   const { donationInfo: d, showErrors } = props;
 
   const isEmpty = (val: string) => val.trim().length === 0;
-  // sınıra ulaşınca seçili olanlar ve "fark etmeksizin" tıklanabilir kalır ki biri bırakılıp başkası seçilebilsin
-  const limitReached = d.bloodGroup.length >= MAX_BLOOD_GROUP_SELECTION;
 
   const bloodGroupError = showErrors && d.bloodGroup.length === 0;
   const bloodTypeError = showErrors && d.bloodType.length === 0;
@@ -88,7 +73,6 @@ export default function BloodDonationFormInputs(props: InputProps) {
 
   return (
     <form className="form" onSubmit={(e) => e.preventDefault()}>
-      <Section no={1} title={t("sectionNeed")}>
         {/* uzun düğme ızgarası yerine açılır liste: ekranda tek alan görünür (eski sitedeki gibi) */}
         <TextField
           select
@@ -96,26 +80,16 @@ export default function BloodDonationFormInputs(props: InputProps) {
           size="small"
           margin="dense"
           label={t("bloodGroup")}
-          value={d.bloodGroup}
+          value={d.bloodGroup[0] ?? ""}
           error={bloodGroupError}
-          helperText={bloodGroupError ? t("requiredText") : t("maxGroupsHint", { max: MAX_BLOOD_GROUP_SELECTION })}
-          slotProps={{ select: { multiple: true, renderValue: (v) => (v as string[]).join(", ") } }}
-          onChange={(e) => {
-            const v = e.target.value as unknown as string[];
-            // tıklanan öğe = eski ve yeni seçim arasındaki fark; kurallar (en fazla 4, "fark etmeksizin" tek başına) toggleBloodGroup'ta
-            const changed = v.find((x) => !d.bloodGroup.includes(x)) ?? d.bloodGroup.find((x) => !v.includes(x));
-            if (changed) props.toggleBloodGroup(changed);
-          }}
+          helperText={bloodGroupError ? t("requiredText") : ""}
+          onChange={(e) => props.setBloodGroup(e.target.value)}
         >
-          {[...BLOOD_GROUPS, REGARDLESS_BLOOD_GROUP].map((group) => {
-            const selected = d.bloodGroup.includes(group);
-            return (
-              <MenuItem key={group} value={group} disabled={limitReached && !selected && group !== REGARDLESS_BLOOD_GROUP}>
-                <Checkbox size="small" checked={selected} sx={{ p: 0, mr: 1 }} />
-                {group === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : group}
-              </MenuItem>
-            );
-          })}
+          {[...BLOOD_GROUPS, REGARDLESS_BLOOD_GROUP].map((group) => (
+            <MenuItem key={group} value={group}>
+              {group === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : group}
+            </MenuItem>
+          ))}
         </TextField>
 
         <TextField
@@ -137,9 +111,7 @@ export default function BloodDonationFormInputs(props: InputProps) {
             </MenuItem>
           ))}
         </TextField>
-      </Section>
 
-      <Section no={2} title={t("sectionPatient")}>
         <LabeledTextField
           label={t("fullName")}
           name="fullName"
@@ -159,9 +131,7 @@ export default function BloodDonationFormInputs(props: InputProps) {
           error={phoneError}
           helperText={phoneError ? t("requiredText") : ""}
         />
-      </Section>
 
-      <Section no={3} title={t("sectionPlace")}>
         {/* dar telefonda "Düzenli İhtiyaç" tarihin altına iner; yoksa sayfa yana taşıyordu */}
         <div className="tarih-satiri">
           <div className="tarih-satiri__tarih">
@@ -209,9 +179,7 @@ export default function BloodDonationFormInputs(props: InputProps) {
           error={locationError}
           helperText={locationError ? t("requiredText") : `${d.location.length}/330`}
         />
-      </Section>
 
-      <Section no={4} title={t("sectionTemplate")}>
         <TextField
           select
           fullWidth
@@ -228,7 +196,6 @@ export default function BloodDonationFormInputs(props: InputProps) {
             </MenuItem>
           ))}
         </TextField>
-      </Section>
     </form>
   );
 }
