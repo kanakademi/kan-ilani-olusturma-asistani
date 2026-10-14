@@ -140,39 +140,17 @@
   outline-offset: 3px;
 }
 
-/* telefon: önizleme ve hemen altındaki indir düğmesi üstte sabit, form altından kayar; kaydırmadan hep görünür */
+/* telefon: Sertunç Bey'in sürümündeki basit akış — form, şablon, kaydet ipucu ve düğmesi, en altta önizleme;
+   sabit/yarım kayan alan yok (telefonu az kullananlar için) */
 @media (max-width: 879px) {
-  /* odaklanan alan üstteki sabit önizlemenin altında kalmasın */
-  html {
-    scroll-padding-top: calc(44dvh + 80px);
-  }
-  .onizleme {
-    order: -1;
-    position: sticky;
-    z-index: 10;
-    top: 0;
-    max-width: none;
-    gap: 8px;
-    margin: 0 -16px;
-    width: calc(100% + 32px);
-    padding: 8px 16px 10px;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--cizgi);
-    box-shadow: 0 6px 16px rgb(0 0 0 / 10%);
-  }
   .onizleme__baslik {
     display: none;
   }
   .onizleme__alan {
-    height: 44vh;
-    height: 44dvh;
-  }
-  .onizleme__kutu {
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px var(--cizgi);
-  }
-  .download-image-button {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
+    order: 1;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    max-width: 360px;
+    margin: 4px auto 0;
   }
 }

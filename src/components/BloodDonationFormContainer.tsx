@@ -26,7 +26,7 @@ export default function BloodDonationFormContainer() {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const [previewScale, setPreviewScale] = useState(1);
 
-  // 360×640 görsel kutusuna sığacak kadar küçültülür (masaüstü 1, telefonda üstte sabit alan ~0.55); indirilen görsel yine 1080×1920
+  // 360×640 görsel kutusuna sığacak kadar küçültülür (masaüstü 1, dar telefonda ekran genişliğine göre); indirilen görsel yine 1080×1920
   useLayoutEffect(() => {
     const el = previewRef.current;
     if (!el) return;
