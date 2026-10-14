@@ -4,7 +4,15 @@ import html2canvas from "html2canvas";
 import { useTranslation } from "react-i18next";
 import "./BloodDonationFormContainer.css";
 import { formatDateToTurkish, formatPhoneNumber, hashData } from "../utils/formUtils";
-import { type DonationInfo, initialDonationInfo } from "../entities/DonationInfo";
+import {
+  type DonationInfo,
+  type RequiredField,
+  initialDonationInfo,
+  isDonationInfoComplete,
+  missingRequiredFields,
+  MIN_PHONE_LENGTH,
+  REGARDLESS_BLOOD_GROUP,
+} from "../entities/DonationInfo";
 import BloodDonationFormInputs from "./BloodDonationFormInputs";
 import { getTemplateByIndex } from "../templates";
 
@@ -39,8 +47,9 @@ export default function BloodDonationFormContainer() {
     }));
   };
 
-  // eski uygulamadaki gibi tek kan grubu (ya da "fark etmeksizin"); ilanda en büyük boyda yazılır
-  const setBloodGroup = (group: string) => setDonationInfo((prev) => ({ ...prev, bloodGroup: [group] }));
+  // en fazla 4 grup (sınırı liste uygular); "fark etmeksizin" seçilince yalnızca o kalır (PR #46)
+  const setBloodGroups = (groups: string[]) =>
+    setDonationInfo((prev) => ({ ...prev, bloodGroup: groups.includes(REGARDLESS_BLOOD_GROUP) ? [REGARDLESS_BLOOD_GROUP] : groups }));
 
   const setBloodType = (bloodType: string[]) => setDonationInfo((prev) => ({ ...prev, bloodType }));
 
@@ -99,7 +108,7 @@ export default function BloodDonationFormContainer() {
     setShowErrors(true);
     if (!imageRef.current) return;
 
-    const fieldLabels: Record<keyof Omit<DonationInfo, "isRegularNeed" | "dateFormatted">, string> = {
+    const fieldLabels: Record<RequiredField, string> = {
       bloodGroup: t("bloodGroup"),
       bloodType: t("bloodType"),
       fullName: t("fullName"),
@@ -109,17 +118,8 @@ export default function BloodDonationFormContainer() {
       location: t("location"),
     };
 
-    const missingFields: string[] = [];
-
-    (Object.keys(fieldLabels) as Array<keyof typeof fieldLabels>).forEach((key) => {
-      const val = donationInfo[key];
-      const filled = Array.isArray(val)
-        ? val.length > 0
-        : typeof val === "string"
-          ? val.trim() !== ""
-          : val != null;
-      if (!filled) missingFields.push(fieldLabels[key]);
-    });
+    // eksik alanlar tek kuraldan (kaydet ipucu da aynısını kullanır); burada yalnızca adları çevrilir
+    const missingFields = missingRequiredFields(donationInfo).map((key) => fieldLabels[key]);
 
     if (missingFields.length > 0) {
       const nounKey = missingFields.length === 1 ? "fillAllFieldsSingleNoun" : "fillAllFieldsMultipleNoun";
@@ -136,7 +136,7 @@ export default function BloodDonationFormContainer() {
       return;
     }
 
-    if (donationInfo.phone.length < 11) {
+    if (donationInfo.phone.length < MIN_PHONE_LENGTH) {
       Swal.fire({
         icon: "warning",
         confirmButtonText: t("close"),
@@ -229,7 +229,7 @@ export default function BloodDonationFormContainer() {
         selectedTemplate={selectedTemplateIndex}
         showErrors={showErrors}
         handleDonationInfoChange={handleDonationInfoChange}
-        setBloodGroup={setBloodGroup}
+        setBloodGroups={setBloodGroups}
         setBloodType={setBloodType}
         handleDonationInfoPhoneChange={handleDonationInfoPhoneChange}
         handleDonationInfoDateChange={handleDonationInfoDateChange}
@@ -250,6 +250,12 @@ export default function BloodDonationFormContainer() {
             </div>
           </div>
         </div>
+        {/* form tamamlanınca kaydet düğmesine yönlendirme (PR #46); indirmeyle aynı kural */}
+        {isDonationInfoComplete(donationInfo) && (
+          <p className="kaydet-ipucu" role="status">
+            ↓ {t("saveToGalleryHint")}
+          </p>
+        )}
         {/* eski resim-düğme yerine klavye ve ekran okuyucuyla da çalışan gerçek düğme */}
         <button type="button" className="download-image-button" onClick={downloadImage}>
           {t("downloadButtonAlt")}

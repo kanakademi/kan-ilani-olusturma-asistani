@@ -94,7 +94,10 @@
   white-space: nowrap;
   color: var(--grup);
 }
-/* "A RH (-)" tek parça; yazı boyu alanı dolduracak kadar büyük (useFitText genişliğe göre küçültür) */
+/* "A RH (-)" tek parça; yazı boyu alanı dolduracak kadar büyük (useFitText genişliğe/yüksekliğe göre küçültür) */
+.st-groups > span {
+  display: block;
+}
 .st-groups--any {
   display: flex;
   flex-direction: column;
@@ -326,13 +329,62 @@
   border-bottom: 0;
 }
 
-/* ---------- 6 · Beyaz: sağ kenardan inen pembe damla, siyah kan grubu, sarı uyarı ---------- */
-.il--damla {
-  --zemin: #ffffff;
+/* ---------- 6 · Çerçeve: beyaz, kırmızı damla, alt bilgiler kırmızı yuvarlak çerçevede ikonlu ---------- */
+.il--cerceve {
+  --zemin: #fdfcfa;
   --grup: #111;
   --alt: #232126;
-  --alt-yazi: #f2ea1b;
+  --alt-yazi: #ff3b3b;
 }
-.il--damla .il-body {
-  padding-right: 120px;
+.il--cerceve .il-a {
+  padding-right: 92px;
+}
+.il--cerceve .il-b {
+  padding: 8px 12px 10px;
+  border: 2.5px solid #e02424;
+  border-radius: 16px;
+  background: #fff;
+}
+.il--cerceve .il-b .il-row {
+  flex-direction: row-reverse;
+}
+.il--cerceve .il-b .il-ikon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fde2e2;
+}
+.il--cerceve .il-b .il-ikon svg {
+  width: 14px;
+  height: 14px;
+}
+.il--cerceve .il-centers {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-content: start;
+  column-gap: 8px;
+}
+.il--cerceve .il-centers .il-ikon {
+  grid-row: 1;
+  grid-column: 1;
+}
+.il--cerceve .il-centers > p:first-child {
+  grid-column: 2;
+}
+.il--cerceve .il-centers > p:nth-of-type(2) {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 7 · Lavanta: lila zemin, kalpli lacivert damla ---------- */
+.il--lavanta {
+  --zemin: #f7efff;
+  --grup: #4847ef;
+  --alt: #c9b1e1;
+  --alt-yazi: #4847ef;
+}
+.il--lavanta .il-a {
+  padding-right: 110px;
 }

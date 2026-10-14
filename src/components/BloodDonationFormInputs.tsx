@@ -3,7 +3,7 @@ import LabeledTextField from "./LabeledTextField";
 import { Checkbox, FormControlLabel, IconButton, MenuItem, TextField } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import { type DonationInfo, REGARDLESS_BLOOD_GROUP } from "../entities/DonationInfo";
+import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
 import { getTemplateList } from "../templates";
 
 const BLOOD_GROUPS = ["A RH (+)", "A RH (-)", "B RH (+)", "B RH (-)", "AB RH (+)", "AB RH (-)", "0 RH (+)", "0 RH (-)"];
@@ -22,7 +22,7 @@ interface InputProps {
   selectedTemplate: number;
   showErrors: boolean;
   handleDonationInfoChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  setBloodGroup: (group: string) => void;
+  setBloodGroups: (groups: string[]) => void;
   setBloodType: (types: string[]) => void;
   handleDonationInfoPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDonationInfoDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +34,9 @@ export default function BloodDonationFormInputs(props: InputProps) {
   const { donationInfo: d, showErrors } = props;
 
   const isEmpty = (val: string) => val.trim().length === 0;
+
+  const hasRegardless = d.bloodGroup.includes(REGARDLESS_BLOOD_GROUP);
+  const limitReached = d.bloodGroup.length >= MAX_BLOOD_GROUP_SELECTION;
 
   const bloodGroupError = showErrors && d.bloodGroup.length === 0;
   const bloodTypeError = showErrors && d.bloodType.length === 0;
@@ -80,16 +83,24 @@ export default function BloodDonationFormInputs(props: InputProps) {
           size="small"
           margin="dense"
           label={t("bloodGroup")}
-          value={d.bloodGroup[0] ?? ""}
+          value={d.bloodGroup}
           error={bloodGroupError}
           helperText={bloodGroupError ? t("requiredText") : ""}
-          onChange={(e) => props.setBloodGroup(e.target.value)}
+          slotProps={{ select: { multiple: true, renderValue: (v) => (v as string[]).map((g) => (g === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : g)).join(", ") } }}
+          onChange={(e) => props.setBloodGroups(e.target.value as unknown as string[])}
         >
-          {[...BLOOD_GROUPS, REGARDLESS_BLOOD_GROUP].map((group) => (
-            <MenuItem key={group} value={group}>
-              {group === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : group}
-            </MenuItem>
-          ))}
+          {[...BLOOD_GROUPS, REGARDLESS_BLOOD_GROUP].map((group) => {
+            const selected = d.bloodGroup.includes(group);
+            // PR #46: "fark etmeksizin" seçiliyken diğerleri, 4 grup seçiliyken seçilmemişler ve "fark etmeksizin" kapalı;
+            // seçili olanlar tıklanabilir kalır ki biri bırakılıp başkası seçilebilsin
+            const disabled = group === REGARDLESS_BLOOD_GROUP ? limitReached : (hasRegardless || limitReached) && !selected;
+            return (
+              <MenuItem key={group} value={group} disabled={disabled}>
+                <Checkbox size="small" checked={selected} sx={{ p: 0, mr: 1 }} />
+                {group === REGARDLESS_BLOOD_GROUP ? t("regardlessOfBloodType") : group}
+              </MenuItem>
+            );
+          })}
         </TextField>
 
         <TextField
@@ -125,7 +136,8 @@ export default function BloodDonationFormInputs(props: InputProps) {
           type="tel"
           label={t("phone")}
           name="phone"
-          slotProps={{ htmlInput: { inputMode: "tel" } }}
+          placeholder="0000 000 00 00"
+          slotProps={{ htmlInput: { inputMode: "tel" }, inputLabel: { shrink: true } }}
           value={d.phone}
           onChange={props.handleDonationInfoPhoneChange}
           error={phoneError}
