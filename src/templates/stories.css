@@ -86,7 +86,7 @@
 }
 .st-groups {
   display: grid;
-  gap: 0 18px;
+  gap: 0.18em 18px; /* iki satır arası açık (geri bildirim) */
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.02em;
