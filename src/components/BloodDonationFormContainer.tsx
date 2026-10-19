@@ -166,6 +166,33 @@ export default function BloodDonationFormContainer() {
         throw new Error("Canvas export failed");
       }
 
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
+      const file = new File([blob], "kan-bagis-ilani-formu.png", { type: "image/png" });
+
+      // telefonda paylaş menüsü "Resmi Kaydet" ile doğrudan galeriye kaydeder (iPhone'da indirme Dosyalar'a gider)
+      if (isMobile && navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file] });
+          updateCounter();
+          return;
+        } catch (e) {
+          if ((e as Error).name === "AbortError") return; // kullanıcı menüyü kapattı
+          // izin yoksa (ör. bekleme sonrası) aşağıdaki yollara düş
+        }
+      }
+
+      // uygulama içi tarayıcılar (WhatsApp, Instagram) indirmeyi yok sayar: iPhone'da görseli gösterip basılı tutarak kaydettir
+      if (/iPhone|iPad|iPod/i.test(window.navigator.userAgent)) {
+        Swal.fire({
+          imageUrl: canvas.toDataURL("image/png"),
+          imageAlt: t("downloadButtonAlt"),
+          html: t("longPressToSave"),
+          confirmButtonText: t("close"),
+        });
+        updateCounter();
+        return;
+      }
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.download = "kan-bagis-ilani-formu.png";
@@ -173,8 +200,6 @@ export default function BloodDonationFormContainer() {
       link.style.display = "none";
       link.target = "_blank";
       document.body.appendChild(link);
-
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
 
       if (isMobile) {
         try {
