@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 import type { DonationInfo } from "../entities/DonationInfo";
+import type { GorselDil } from "./storyText";
 
 export interface TemplateConfig {
     id: string;
@@ -11,6 +12,8 @@ export interface TemplateConfig {
 export interface TemplateProps {
     donationInfo: DonationInfo;
     imageRef: RefObject<HTMLDivElement | null>;
+    /** görseldeki yazıların dili (varsayılan Türkçe) */
+    dil?: GorselDil;
 }
 
 export interface TemplateModule {

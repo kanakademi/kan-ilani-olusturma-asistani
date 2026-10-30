@@ -1,5 +1,14 @@
 import { formatDateToTurkish } from "../utils/formUtils";
 
+// değer formda Türkçe saklanır, etiket seçili dilde gösterilir (görselde görsel diline çevrilir)
+export const BLOOD_TYPES = [
+  ["Kırmızı Kan", "redBlood"],
+  ["Trombosit", "platelet"],
+  ["Granülosit", "granulocyte"],
+  ["Plazma", "plasma"],
+  ["Kök Hücre", "stemCell"],
+] as const;
+
 export const REGARDLESS_BLOOD_GROUP = "Kan Grubu Fark Etmeksizin";
 export const MAX_BLOOD_GROUP_SELECTION = 4;
 // telefon maskeli tutulur ("0532 123 45 67"); indirme için en az bu uzunluk

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { DonationInfo } from "../entities/DonationInfo";
-import { storyText } from "./storyText";
+import { storyText, type GorselDil } from "./storyText";
 import { capsTR } from "../utils/formUtils";
 
 // html2canvas SVG'yi ayrı resim olarak çizer: currentColor miras alınmaz, renk açıkça verilmeli
@@ -73,13 +73,13 @@ export function Brand({ className }: { className?: string }) {
 }
 
 // Görselin ana öğesi: kan grupları, sitede kullanılan "A RH (-)" yazımıyla; boyu stories.tsx alana göre ayarlar
-export function Groups({ d }: { d: DonationInfo }) {
-  const { groups, anyGroup } = storyText(d);
+export function Groups({ d, dil = "tr" }: { d: DonationInfo; dil?: GorselDil }) {
+  const { groups, anyGroup, yazi } = storyText(d, dil);
   if (anyGroup)
     return (
       <div className="st-groups st-groups--any" data-fit>
-        <span>Kan Grubu</span>
-        <span>Fark Etmeksizin</span>
+        <span>{yazi.herGrup[0]}</span>
+        <span>{yazi.herGrup[1]}</span>
       </div>
     );
   // PR #46'daki gibi: 1 grup tek satır, 2 grup alt alta, 3–4 grupta ilk ikisi üstte, kalanlar altta (virgülle)

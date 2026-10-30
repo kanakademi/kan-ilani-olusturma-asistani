@@ -3,18 +3,10 @@ import LabeledTextField from "./LabeledTextField";
 import { Checkbox, FormControlLabel, IconButton, MenuItem, TextField } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION } from "../entities/DonationInfo";
+import { type DonationInfo, REGARDLESS_BLOOD_GROUP, MAX_BLOOD_GROUP_SELECTION, BLOOD_TYPES } from "../entities/DonationInfo";
 import { getTemplateList } from "../templates";
 
 const BLOOD_GROUPS = ["A RH (+)", "A RH (-)", "B RH (+)", "B RH (-)", "AB RH (+)", "AB RH (-)", "0 RH (+)", "0 RH (-)"];
-// değer görsele Türkçe yazılır, etiket seçili dilde gösterilir
-const BLOOD_TYPES = [
-  ["Kırmızı Kan", "redBlood"],
-  ["Trombosit", "platelet"],
-  ["Granülosit", "granulocyte"],
-  ["Plazma", "plasma"],
-  ["Kök Hücre", "stemCell"],
-] as const;
 const BLOOD_TYPE_KEYS: Record<string, string> = Object.fromEntries(BLOOD_TYPES);
 
 interface InputProps {

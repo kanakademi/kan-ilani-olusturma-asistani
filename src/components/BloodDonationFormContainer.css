@@ -88,6 +88,33 @@
   font-weight: 700;
   color: var(--color-muted);
 }
+/* görsel dili: küçük iki seçenekli anahtar */
+.gorsel-dil {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+.gorsel-dil span {
+  margin-right: 0.25rem;
+}
+.gorsel-dil button {
+  min-height: 32px;
+  padding: 0 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gorsel-dil button[aria-pressed="true"] {
+  border-color: #e3262f;
+  background: #e3262f;
+  color: #fff;
+}
 /* masaüstünde de indir düğmesi ekranda kalsın: alçak ekranda önizleme küçülür */
 .onizleme__alan {
   display: grid;

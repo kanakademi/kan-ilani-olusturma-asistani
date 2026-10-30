@@ -2,7 +2,7 @@ import { useRef, type ReactNode } from "react";
 import type { TemplateProps } from "./types";
 import { REGARDLESS_BLOOD_GROUP, type DonationInfo } from "../entities/DonationInfo";
 import { Brand, Groups, Icon } from "./parts";
-import { storyText } from "./storyText";
+import { storyText, type GorselDil } from "./storyText";
 import { useFitText } from "../utils/useFitText";
 import "./stories.css";
 
@@ -30,11 +30,11 @@ function Row({ icon, label, value, ink }: { icon: IconName; label: string; value
   );
 }
 
-function Centers({ text, ink }: { text: string; ink: string }) {
+function Centers({ text, ink, baslik }: { text: string; ink: string; baslik: string }) {
   return (
     <div className="il-row il-centers">
       <p>
-        <b>Kan bağışının yapılabileceği merkezler:</b>
+        <b>{baslik}</b>
       </p>
       <p>{text}</p>
       <span className="il-ikon">
@@ -127,8 +127,8 @@ const SUSLER: Record<string, ReactNode> = {
   ),
 };
 
-function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps["imageRef"]; tema: string }) {
-  const { types } = storyText(d);
+function Ilan({ d, imageRef, tema, dil }: { d: DonationInfo; imageRef: TemplateProps["imageRef"]; tema: string; dil: GorselDil }) {
+  const { types, tarih, yazi } = storyText(d, dil);
   const ink = IKON[tema] ?? "#1a1730";
   // uzun ad/hastane/merkez yazılınca bütün bilgi satırları birlikte küçülür; hiçbir satır kaybolmaz
   const bodyRef = useRef<HTMLDivElement | null>(null);
@@ -147,7 +147,7 @@ function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps[
         <Brand />
       </header>
       <section className="il-top" ref={topRef}>
-        <Groups d={d} />
+        <Groups d={d} dil={dil} />
       </section>
       <div className="il-body" ref={bodyRef}>
         <div className="il-fit" data-fit>
@@ -155,39 +155,39 @@ function Ilan({ d, imageRef, tema }: { d: DonationInfo; imageRef: TemplateProps[
         {tema === "gece" ? (
           <>
             <div className="il-a">
-              <Row icon="drop" label="Bağış Türü" value={types.join(", ")} ink={ink} />
-              <Row icon="user" label="Hasta Adı" value={d.fullName} ink={ink} />
-              <Row icon="phone" label="Telefon" value={d.phone} ink={ink} />
-              <Row icon="calendar" label="Tarih" value={d.dateFormatted} ink={ink} />
-              <Row icon="hospital" label="Hastane Adı" value={d.hospital} ink={ink} />
+              <Row icon="drop" label={yazi.bagisTuru} value={types.join(", ")} ink={ink} />
+              <Row icon="user" label={yazi.hasta} value={d.fullName} ink={ink} />
+              <Row icon="phone" label={yazi.telefon} value={d.phone} ink={ink} />
+              <Row icon="calendar" label={yazi.tarih} value={tarih} ink={ink} />
+              <Row icon="hospital" label={yazi.hastane} value={d.hospital} ink={ink} />
             </div>
             <div className="il-b">
-              <Centers text={d.location} ink={ink} />
+              <Centers text={d.location} ink={ink} baslik={yazi.merkezler} />
             </div>
           </>
         ) : (
           <>
             <div className="il-a">
-              <Row icon="drop" label="Bağış Türü" value={types.join(", ")} ink={ink} />
-              <Row icon="calendar" label="Tarih" value={d.dateFormatted} ink={ink} />
-              <Row icon="phone" label="Telefon" value={d.phone} ink={ink} />
+              <Row icon="drop" label={yazi.bagisTuru} value={types.join(", ")} ink={ink} />
+              <Row icon="calendar" label={yazi.tarih} value={tarih} ink={ink} />
+              <Row icon="phone" label={yazi.telefon} value={d.phone} ink={ink} />
             </div>
             <div className="il-b">
-              <Row icon="user" label="Hasta Adı" value={d.fullName} ink={ink} />
-              <Row icon="hospital" label="Hastane Adı" value={d.hospital} ink={ink} />
-              <Centers text={d.location} ink={ink} />
+              <Row icon="user" label={yazi.hasta} value={d.fullName} ink={ink} />
+              <Row icon="hospital" label={yazi.hastane} value={d.hospital} ink={ink} />
+              <Centers text={d.location} ink={ink} baslik={yazi.merkezler} />
             </div>
           </>
         )}
         </div>
       </div>
-      <footer className="il-foot">Kan bağışından önce ilgili kişiyle iletişime geçiniz!</footer>
+      <footer className="il-foot">{yazi.uyari}</footer>
     </div>
   );
 }
 
 const sablon = (tema: string) => {
-  const S = ({ donationInfo, imageRef }: TemplateProps) => <Ilan d={donationInfo} imageRef={imageRef} tema={tema} />;
+  const S = ({ donationInfo, imageRef, dil = "tr" }: TemplateProps) => <Ilan d={donationInfo} imageRef={imageRef} tema={tema} dil={dil} />;
   return S;
 };
 export const GeceStory = sablon("gece");

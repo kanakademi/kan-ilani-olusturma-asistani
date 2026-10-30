@@ -15,6 +15,7 @@ import {
 } from "../entities/DonationInfo";
 import BloodDonationFormInputs from "./BloodDonationFormInputs";
 import { getTemplateByIndex } from "../templates";
+import type { GorselDil } from "../templates/storyText";
 
 export default function BloodDonationFormContainer() {
   const { t, i18n } = useTranslation();
@@ -35,6 +36,9 @@ export default function BloodDonationFormContainer() {
     return () => ro.disconnect();
   }, []);
 
+  // görsel dili: kullanıcı seçmediyse arayüz diliyle aynı
+  const [gorselDilSecimi, setGorselDilSecimi] = useState<GorselDil | null>(null);
+  const gorselDil: GorselDil = gorselDilSecimi ?? (i18n.language.startsWith("en") ? "en" : "tr");
   const selectedTemplate = getTemplateByIndex(selectedTemplateIndex);
   const TemplateComponent = selectedTemplate?.Component;
 
@@ -263,6 +267,14 @@ export default function BloodDonationFormContainer() {
 
       <aside className="onizleme" aria-label={t("preview")}>
         <div className="onizleme__baslik">{t("preview")}</div>
+        <div className="gorsel-dil" role="group" aria-label={t("imageLanguage")}>
+          <span>{t("imageLanguage")}</span>
+          {(["tr", "en"] as const).map((d) => (
+            <button key={d} type="button" aria-pressed={gorselDil === d} onClick={() => setGorselDilSecimi(d)}>
+              {d === "tr" ? "Türkçe" : "English"}
+            </button>
+          ))}
+        </div>
         <div className="onizleme__alan" ref={previewRef}>
           <div className="onizleme__kutu" style={{ width: 360 * previewScale, height: 640 * previewScale }}>
             <div className="onizleme__olcek" style={{ transform: `scale(${previewScale})` }}>
@@ -270,6 +282,7 @@ export default function BloodDonationFormContainer() {
                 <TemplateComponent
                   imageRef={imageRef}
                   donationInfo={donationInfo}
+                  dil={gorselDil}
                 />
               )}
             </div>
